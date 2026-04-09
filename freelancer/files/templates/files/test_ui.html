@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UI Showcase</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'files/css/styles.css' %}">
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="container-main topbar__inner">
+      <div class="brand">
+        <span class="icon icon--lg brand__icon">⚡</span>
+        <span class="brand__name">UI Showcase</span>
+      </div>
+
+      <nav class="desktop-nav" aria-label="Навигация">
+        <button class="desktop-nav__item" type="button">Buttons</button>
+        <button class="desktop-nav__item" type="button">Forms</button>
+        <button class="desktop-nav__item" type="button">Overlays</button>
+        <button class="desktop-nav__item" type="button">Navigation</button>
+      </nav>
+
+      <div class="toolbar">
+        <button
+          class="btn btn--ghost btn--sm"
+          type="button"
+          data-theme-toggle
+        >
+          Тема
+        </button>
+
+        <button class="btn btn--default btn--sm" type="button">
+          <span class="icon icon--sm">+</span>
+          Новый проект
+        </button>
+
+        <button
+          class="btn btn--ghost btn--icon menu-btn"
+          type="button"
+          aria-label="Меню"
+          aria-expanded="false"
+          data-menu-toggle
+        >
+          <span class="icon icon--md">☰</span>
+        </button>
+      </div>
+    </div>
+
+    <nav class="mobile-menu" id="mobileMenu" aria-label="Мобильная навигация">
+      <div class="container-main mobile-menu__inner">
+        <button class="mobile-menu__item" type="button">Buttons</button>
+        <button class="mobile-menu__item" type="button">Forms</button>
+        <button class="mobile-menu__item" type="button">Overlays</button>
+        <button class="mobile-menu__item" type="button">Navigation</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container-main showcase">
+    <header class="showcase__header">
+      <h1 class="showcase__title">Полный статический UI-kit</h1>
+      <p class="showcase__subtitle">
+        Все компоненты из архива показаны подряд, с lime-акцентом из исходной темы.
+      </p>
+    </header>
+
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">Buttons</h2>
+      <div class="demo-row">
+        <button class="btn btn--default" type="button">Default</button>
+        <button class="btn btn--secondary" type="button">Secondary</button>
+        <button class="btn btn--outline" type="button">Outline</button>
+        <button class="btn btn--ghost" type="button">Ghost</button>
+        <button class="btn btn--destructive" type="button">Destructive</button>
+        <button class="btn btn--link" type="button">Link</button>
+        <button class="btn btn--default btn--sm" type="button">Small</button>
+        <button class="btn btn--default btn--lg" type="button">Large</button>
+        <button class="btn btn--default btn--icon" type="button">+</button>
+        <button class="btn btn--default" type="button" disabled>Disabled</button>
+      </div>
+    </section>
+
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">Badges</h2>
+      <div class="demo-row">
+        <span class="badge badge--default">Default</span>
+        <span class="badge badge--secondary">Secondary</span>
+        <span class="badge badge--outline">Outline</span>
+        <span class="badge badge--destructive">Destructive</span>
+      </div>
+    </section>
+
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">Input / Textarea / Label</h2>
+      <div class="demo-grid demo-grid--2">
+        <div class="demo-col">
+          <label class="label" for="input-1">Имя</label>
+          <input id="input-1" class="input" placeholder="Введите текст">
+          <input class="input" placeholder="Disabled" disabled>
+        </div>
+
+        <div class="demo-col">
+          <label class="label" for="textarea-1">Комментарий</label>
+          <textarea
+            id="textarea-1"
+            class="textarea"
+            placeholder="Textarea"
+          ></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">
+        Checkbox / Switch / Radio / Slider / Toggle
+      </h2>
+
+      <div class="demo-grid demo-grid--2">
+        <div class="demo-col">
+          <div class="demo-row">
+            <label class="check">
+              <input type="checkbox" checked>
+              <span class="check__box">
+                <svg
+                  class="icon icon--check"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"
+                  />
+                </svg>
+              </span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox">
+              <span class="check__box">
+                <svg
+                  class="icon icon--check"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"
+                  />
+                </svg>
+              </span>
+            </label>
+
+            <span class="demo-muted">Custom checkbox</span>
+          </div>
+
+          <div class="demo-row">
+            <button
+              class="switch"
+              type="button"
+              data-state="unchecked"
+              aria-pressed="false"
+              data-switch
+            >
+              <span class="switch__thumb"></span>
+            </button>
+
+            <button
+              class="switch"
+              type="button"
+              data-state="checked"
+              aria-pressed="true"
+              data-switch
+            >
+              <span class="switch__thumb"></span>
+            </button>
+          </div>
+
+          <div class="radio-group">
+            <label class="demo-row" style="gap:.5rem">
+              <span class="radio" data-state="checked">
+                <span class="radio__indicator">
+                  <svg viewBox="0 0 10 10" aria-hidden="true">
+                    <circle cx="5" cy="5" r="3.2" />
+                  </svg>
+                </span>
+              </span>
+              Выбран
+            </label>
+
+            <label class="demo-row" style="gap:.5rem">
+              <span class="radio">
+                <span class="radio__indicator">
+                  <svg viewBox="0 0 10 10" aria-hidden="true">
+                    <circle cx="5" cy="5" r="3.2" />
+                  </svg>
+                </span>
+              </span>
+              Не выбран
+            </label>
+          </div>
+        </div>
+
+        <div class="demo-col">
+          <div>
+            <div class="demo-row" style="justify-content: space-between;">
+              <strong>Загрузка файла</strong>
+              <span class="demo-muted">72%</span>
+            </div>
+
+            <div class="progress">
+              <div
+                class="progress__indicator"
+                style="transform: translateX(-28%);"
+              ></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="demo-row" style="justify-content: space-between;">
+              <strong>Настройка</strong>
+              <span class="demo-muted">36%</span>
+            </div>
+
+            <div class="slider">
+              <div class="slider__track">
+                <div
+                  class="slider__range"
+                  style="width: 36%;"
+                ></div>
+              </div>
+
+              <span
+                class="slider__thumb"
+                style="position:absolute; left: calc(36% - 0.625rem);"
+              ></span>
+            </div>
+          </div>
+
+          <div class="demo-row">
+            <button
+              class="toggle toggle--default"
+              type="button"
+              data-state="on"
+            >
+              On
+            </button>
+
+            <button
+              class="toggle toggle--outline toggle--default"
+              type="button"
+            >
+              Off
+            </button>
+
+            <div class="toggle-group">
+              <button class="toggle toggle--default" type="button">Left</button>
+              <button
+                class="toggle toggle--default"
+                type="button"
+                data-state="on"
+              >
+                Right
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">Card / Alert / Skeleton</h2>
+      <div class="demo-grid demo-grid--3">
+        <div class="card">
+          <div class="card__header">
+            <div class="card__title">Card title</div>
+            <div class="card__description">Description text</div>
+          </div>
+
+          <div class="card__content">
+            <div class="skeleton" style="height: 1rem; width: 85%;"></div>
+            <div
+              class="skeleton"
+              style="height: 1rem; width: 65%; margin-top: .5rem;"
+            ></div>
+          </div>
+
+          <div class="card__footer">
+            <button class="btn btn--default btn--sm" type="button">Action</button>
+          </div>
+        </div>
+
+        <div class="alert">
+          <div class="alert__title">Information</div>
+          <div class="alert__description">
+            Обычное сообщение в нейтральной карточке.
+          </div>
+        </div>
+
+        <div class="alert alert--destructive">
+          <div class="alert__title">Ошибка</div>
+          <div class="alert__description">
+            Сообщение об ошибке с destructive-оформлением.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">Breadcrumb / Pagination / Avatar</h2>
+      <div class="demo-grid demo-grid--2">
+        <div class="demo-col">
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <ol class="breadcrumb__list">
+              <li class="breadcrumb__item">
+                <a class="breadcrumb__link" href="#">Главная</a>
+              </li>
+              <li class="breadcrumb__separator">/</li>
+              <li class="breadcrumb__item">
+                <a class="breadcrumb__link" href="#">Проекты</a>
+              </li>
+              <li class="breadcrumb__separator">/</li>
+              <li class="breadcrumb__item">
+                <span class="breadcrumb__page">Текущий</span>
+              </li>
+            </ol>
+          </nav>
+
+          <div class="pagination">
+            <div class="pagination__content">
+              <button class="pagination__link" type="button">1</button>
+              <button class="pagination__link" type="button" aria-current="page">
+                2
+              </button>
+              <button class="pagination__link" type="button">3</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-row">
+          <div class="avatar">
+            <div class="avatar__fallback">MM</div>
+          </div>
+
+          <div class="avatar">
+            <img
+              class="avatar__image"
+              alt=""
+              src="https://picsum.photos/80?random=31"
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">Accordion / Collapsible</h2>
+      <div class="demo-grid demo-grid--2">
+        <div class="card demo-card">
+          <button
+            class="accordion__trigger"
+            type="button"
+            data-accordion-trigger
+            aria-expanded="true"
+          >
+            <span>Аккордеон открыт</span>
+            <span>⌄</span>
+          </button>
+
+          <div class="accordion__content" data-accordion-content>
+            <div class="accordion__content-inner">
+              Контент аккордеона с анимацией и тем же spacing, что и в Radix-варианте.
+            </div>
+          </div>
+        </div>
+
+        <div class="card demo-card">
+          <button
+            class="accordion__trigger"
+            type="button"
+            data-collapsible-trigger
+            aria-expanded="false"
+          >
+            <span>Collapsible закрыт</span>
+            <span>⌄</span>
+          </button>
+
+          <div
+            class="collapsible__content"
+            data-collapsible-content
+            hidden
+          >
+            <div class="accordion__content-inner">
+              Скрываемый блок, который раскрывается через тот же UX-паттерн.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">Tabs / Table / Calendar</h2>
+      <div class="demo-grid demo-grid--2">
+        <div class="tabs" data-tabs>
+          <div class="tabs__list">
+            <button
+              class="tabs__trigger"
+              type="button"
+              data-state="active"
+              data-tab="overview"
+            >
+              Overview
+            </button>
+            <button class="tabs__trigger" type="button" data-tab="tasks">
+              Tasks
+            </button>
+            <button class="tabs__trigger" type="button" data-tab="messages">
+              Messages
+            </button>
+          </div>
+
+          <div class="tabs__content" data-tab-panel="overview">
+            Контент первой вкладки.
+          </div>
+
+          <div class="tabs__content" data-tab-panel="tasks" hidden>
+            Контент второй вкладки.
+          </div>
+
+          <div class="tabs__content" data-tab-panel="messages" hidden>
+            Контент третьей вкладки.
+          </div>
+        </div>
+
+        <div class="card demo-card">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Имя</th>
+                <th>Роль</th>
+                <th>Статус</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>Макс</td>
+                <td>Backend</td>
+                <td>Active</td>
+              </tr>
+              <tr>
+                <td>Анна</td>
+                <td>Design</td>
+                <td>Review</td>
+              </tr>
+              <tr>
+                <td>Илья</td>
+                <td>QA</td>
+                <td>Done</td>
+              </tr>
+            </tbody>
+
+            <caption>
+              Таблица с тем же визуальным набором, что и в компоненте.
+            </caption>
+          </table>
+        </div>
+      </div>
+
+      <div class="card demo-card" style="margin-top:1rem; max-width: 28rem;">
+        <table class="calendar">
+          <thead class="calendar__head">
+            <tr>
+              <th>Пн</th>
+              <th>Вт</th>
+              <th>Ср</th>
+              <th>Чт</th>
+              <th>Пт</th>
+              <th>Сб</th>
+              <th>Вс</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="calendar__cell">
+                <span class="calendar__day calendar__day--muted">26</span>
+              </td>
+              <td class="calendar__cell">
+                <span class="calendar__day">27</span>
+              </td>
+              <td class="calendar__cell">
+                <span class="calendar__day">28</span>
+              </td>
+              <td class="calendar__cell">
+                <span class="calendar__day">29</span>
+              </td>
+              <td class="calendar__cell">
+                <span class="calendar__day calendar__day--selected">30</span>
+              </td>
+              <td class="calendar__cell">
+                <span class="calendar__day">31</span>
+              </td>
+              <td class="calendar__cell">
+                <span class="calendar__day">1</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">
+        Select / Command / Dropdown / Context menu / Menubar / Navigation menu
+      </h2>
+
+      <div class="demo-grid demo-grid--2">
+        <div class="demo-col">
+          <button class="select__trigger" type="button">
+            <span>Выберите вариант</span>
+            <span>⌄</span>
+          </button>
+
+          <div
+            class="select__content"
+            style="position:static; box-shadow:none; border-color: hsl(var(--border));"
+          >
+            <div class="select__item">Option 1</div>
+            <div class="select__item">Option 2</div>
+            <div class="select__item">Option 3</div>
+            <div class="select__separator"></div>
+            <div class="select__item">Separated item</div>
+          </div>
+        </div>
+
+        <div class="command card demo-card" style="padding:0;">
+          <div class="command__input">
+            Search commands <span class="demo-kbd">⌘K</span>
+          </div>
+
+          <div class="command__list">
+            <div class="command__group">
+              <div class="command__item">
+                Open dashboard <span class="command__shortcut">↵</span>
+              </div>
+              <div class="command__item">
+                New project <span class="command__shortcut">N</span>
+              </div>
+              <div class="command__separator"></div>
+              <div class="command__item">Settings</div>
+              <div class="command__empty">No results in this section</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-grid demo-grid--3" style="margin-top:1rem;">
+        <div class="card demo-card">
+          <div
+            class="dropdown-menu__content"
+            style="position:static; box-shadow:none;"
+          >
+            <div class="dropdown-menu__label">Dropdown</div>
+            <div class="dropdown-menu__item">Profile</div>
+            <div class="dropdown-menu__item">Billing</div>
+            <div class="dropdown-menu__separator"></div>
+            <div class="dropdown-menu__item">
+              Sign out <span class="dropdown-menu__shortcut">⌘Q</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card demo-card">
+          <div
+            class="context-menu__content"
+            style="position:static; box-shadow:none;"
+          >
+            <div class="context-menu__label">Context menu</div>
+            <div class="context-menu__item">Cut</div>
+            <div class="context-menu__item">Copy</div>
+            <div class="context-menu__item">Paste</div>
+            <div class="context-menu__separator"></div>
+            <div class="context-menu__item">Delete</div>
+          </div>
+        </div>
+
+        <div class="card demo-card">
+          <div class="menubar__menu">
+            <div class="menubar__item">File</div>
+            <div class="menubar__item">Edit</div>
+            <div class="menubar__item">View</div>
+            <div class="menubar__item">Help</div>
+          </div>
+
+          <div class="navigation-menu" style="margin-top:.75rem;">
+            <div class="navigation-menu__list">
+              <a class="navigation-menu__link" href="#">Docs</a>
+              <a class="navigation-menu__link" href="#">Components</a>
+              <a class="navigation-menu__link" href="#">Examples</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">Popover / Hover card / Tooltip</h2>
+      <div class="demo-grid demo-grid--3">
+        <div class="demo-stage">
+          <div
+            class="popover__content"
+            style="position:absolute; left:1rem; top:1rem; width:18rem;"
+          >
+            <div class="popover__title">Popover</div>
+            <div class="demo-muted" style="margin-top:.25rem;">
+              Всплывающий блок с теми же border/shadow/radius.
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-stage">
+          <div
+            class="hover-card__content"
+            style="position:absolute; left:1rem; top:1rem; width:18rem;"
+          >
+            <div class="popover__title">Hover card</div>
+            <p class="demo-muted" style="margin:.25rem 0 0;">
+              Карточка при наведении на элемент.
+            </p>
+          </div>
+        </div>
+
+        <div class="demo-stage">
+          <div
+            class="tooltip__content"
+            style="position:absolute; left:1rem; top:1rem;"
+          >
+            Tooltip message
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Алерт на весь экран, блокирует любые действия пока открыт
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">
+        Dialog / Alert dialog / Drawer / Sheet
+      </h2>
+
+      <div class="demo-stage">
+        <div class="dialog__overlay" data-state="open"></div>
+        <div class="dialog__content" data-state="open">
+          <div class="dialog__header">
+            <div class="dialog__title">Dialog title</div>
+            <div class="dialog__description">
+              Обычное диалоговое окно с overlay и close button.
+            </div>
+          </div>
+
+          <div>Основной контент диалога.</div>
+
+          <div class="dialog__footer">
+            <button class="btn btn--outline btn--sm" type="button">
+              Cancel
+            </button>
+            <button class="btn btn--default btn--sm" type="button">
+              Continue
+            </button>
+          </div>
+
+          <button class="dialog__close" type="button">×</button>
+        </div>
+      </div>
+
+      <div class="demo-grid demo-grid--3" style="margin-top:1rem;">
+        <div class="demo-stage">
+          <div class="alert-dialog__overlay" data-state="open"></div>
+          <div class="alert-dialog__content" data-state="open">
+            <div class="alert-dialog__header">
+              <div class="alert-dialog__title">Delete project?</div>
+              <div class="alert-dialog__description">
+                Это destructive-сценарий с тем же visual language.
+              </div>
+            </div>
+
+            <div class="alert-dialog__footer">
+              <button class="btn btn--outline btn--sm" type="button">
+                Cancel
+              </button>
+              <button class="btn btn--destructive btn--sm" type="button">
+                Delete
+              </button>
+            </div>
+
+            <button class="alert-dialog__close" type="button">×</button>
+          </div>
+        </div>
+
+        <div class="demo-stage">
+          <div class="drawer__content" data-side="right">
+            <div class="drawer__header">
+              <div class="drawer__title">Drawer</div>
+              <div class="drawer__description">Right side panel example.</div>
+            </div>
+
+            <div class="drawer__footer">
+              <button class="btn btn--outline btn--sm" type="button">
+                Close
+              </button>
+              <button class="btn btn--default btn--sm" type="button">
+                Save
+              </button>
+            </div>
+
+            <button class="drawer__close" type="button">×</button>
+          </div>
+        </div>
+
+        <div class="demo-stage">
+          <div class="sheet__content" data-side="left">
+            <div class="sheet__header">
+              <div class="sheet__title">Sheet</div>
+              <div class="sheet__description">Left side sheet variant.</div>
+            </div>
+
+            <div class="sheet__footer">
+              <button class="btn btn--outline btn--sm" type="button">
+                Close
+              </button>
+              <button class="btn btn--default btn--sm" type="button">
+                Apply
+              </button>
+            </div>
+
+            <button class="sheet__close" type="button">×</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    -->
+
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">Form / Input OTP</h2>
+      <div class="demo-grid demo-grid--2">
+        <form class="form card demo-card">
+          <div class="form__item">
+            <label class="label" for="email">Email</label>
+            <input id="email" class="input" placeholder="email@example.com">
+          </div>
+
+          <div class="form__item">
+            <label class="label" for="msg">Message</label>
+            <textarea
+              id="msg"
+              class="textarea"
+              placeholder="Your message"
+            ></textarea>
+          </div>
+
+          <div class="form__message">Ошибка валидации появится здесь.</div>
+
+          <div class="demo-row">
+            <button class="btn btn--default btn--sm" type="button">Submit</button>
+            <button class="btn btn--outline btn--sm" type="button">Reset</button>
+          </div>
+        </form>
+
+        <div class="card demo-card">
+          <div class="demo-muted" style="margin-bottom:.75rem;">Input OTP</div>
+          <div class="input-otp">
+            <div class="input-otp__group">
+              <input class="input-otp__input" maxlength="1" value="1">
+              <input class="input-otp__input" maxlength="1" value="2">
+              <input class="input-otp__input" maxlength="1" value="3">
+              <input class="input-otp__input" maxlength="1" value="4">
+              <input class="input-otp__input" maxlength="1" value="5">
+              <input class="input-otp__input" maxlength="1" value="6">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">
+        Carousel / Aspect ratio / Chart / Progress
+      </h2>
+
+      <div class="demo-grid demo-grid--2">
+        <div class="carousel">
+          <div class="carousel__viewport">
+            <div class="carousel__container">
+              <div class="carousel__slide card demo-card">
+                <div class="aspect-ratio" style="--ratio:56.25%;">
+                  <div
+                    style="display:flex;align-items:center;justify-content:center;background:hsl(var(--muted));"
+                  >
+                    Slide 1
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="demo-row" style="margin-top:.75rem;">
+            <button class="carousel__button" type="button">←</button>
+            <button class="carousel__button" type="button">→</button>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart__frame">
+            <div class="chart__legend">
+              <span class="chart__legend-item">
+                <span class="chart__swatch chart__swatch--1"></span>
+                Sales
+              </span>
+              <span class="chart__legend-item">
+                <span class="chart__swatch chart__swatch--2"></span>
+                Profit
+              </span>
+              <span class="chart__legend-item">
+                <span class="chart__swatch chart__swatch--3"></span>
+                Users
+              </span>
+            </div>
+
+            <div class="chart__bars">
+              <div class="chart__bar" style="height:52%;"></div>
+              <div class="chart__bar" style="height:80%;"></div>
+              <div class="chart__bar" style="height:38%;"></div>
+              <div class="chart__bar" style="height:66%;"></div>
+              <div class="chart__bar" style="height:28%;"></div>
+            </div>
+
+            <div class="progress">
+              <div
+                class="progress__indicator"
+                style="transform: translateX(-42%);"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">
+        Resizable / Scroll area / Sidebar
+      </h2>
+
+      <div class="demo-grid demo-grid--2">
+        <div class="resizable" style="height:220px;">
+          <div class="resizable__pane card demo-card" style="flex:1;">
+            Left pane
+          </div>
+
+          <div class="resizable__handle resizable__handle--horizontal">
+            <span class="resizable__handle-grip">⋮⋮</span>
+          </div>
+
+          <div class="resizable__pane card demo-card" style="flex:1;">
+            Right pane
+          </div>
+        </div>
+
+        <div class="scroll-area card demo-card" style="height:220px;">
+          <div class="scroll-area__viewport">
+            <div class="demo-col" style="padding-right:.5rem;">
+              <div class="demo-muted">Long content</div>
+              <div class="skeleton" style="height:1rem;width:95%;"></div>
+              <div class="skeleton" style="height:1rem;width:88%;"></div>
+              <div class="skeleton" style="height:1rem;width:76%;"></div>
+              <div class="skeleton" style="height:1rem;width:92%;"></div>
+              <div class="skeleton" style="height:1rem;width:60%;"></div>
+            </div>
+          </div>
+
+          <div
+            class="scrollbar scrollbar--vertical"
+            style="position:absolute; right:0; top:0; bottom:0;"
+          >
+            <div class="scrollbar__thumb"></div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="demo-stage"
+        style="margin-top:1rem; display:grid; grid-template-columns:15rem 1fr;"
+      >
+        <aside class="sidebar">
+          <div class="sidebar__panel">
+            <div style="padding:1rem;font-weight:600;">Sidebar</div>
+            <a class="sidebar__item sidebar__item--active" href="#">Overview</a>
+            <a class="sidebar__item" href="#">Projects</a>
+            <a class="sidebar__item" href="#">Messages</a>
+            <a class="sidebar__item" href="#">Billing</a>
+          </div>
+        </aside>
+
+        <div style="padding:1rem;">
+          Content area with the inset layout used by the sidebar component.
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">Toast / Sonner / Toaster</h2>
+      <div class="demo-grid demo-grid--2">
+        <div class="card demo-card">
+          <div class="toast">
+            <div>
+              <div class="toast__title">Saved</div>
+              <div class="toast__description">
+                Изменения успешно сохранены.
+              </div>
+            </div>
+
+            <button
+              class="btn btn--outline btn--sm toast__action"
+              type="button"
+            >
+              Undo
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="card demo-card"
+          style="position:relative; min-height:12rem;"
+        >
+          <div class="toaster" style="position:absolute;">
+            <div class="sonner-toast">
+              <div>
+                <div class="sonner-toast__title">Toast one</div>
+                <div class="sonner-toast__description">
+                  Первое уведомление.
+                </div>
+              </div>
+            </div>
+
+            <div class="sonner-toast">
+              <div>
+                <div class="sonner-toast__title">Toast two</div>
+                <div class="sonner-toast__description">
+                  Второе уведомление.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase__section">
+      <h2 class="showcase__section-title">Full task list example</h2>
+      <div class="list list--tasks">
+        <label class="task-row">
+          <span class="check">
+            <input type="checkbox" checked>
+            <span class="check__box">
+              <svg
+                class="icon icon--check"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"
+                />
+              </svg>
+            </span>
+          </span>
+          <span class="task-row__text task-row__text--done">
+            Согласовать макеты главной страницы
+          </span>
+        </label>
+
+        <label class="task-row">
+          <span class="check">
+            <input type="checkbox">
+            <span class="check__box">
+              <svg
+                class="icon icon--check"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"
+                />
+              </svg>
+            </span>
+          </span>
+          <span class="task-row__text">
+            Подготовить прототип мобильной версии
+          </span>
+        </label>
+
+        <label class="task-row">
+          <span class="check">
+            <input type="checkbox">
+            <span class="check__box">
+              <svg
+                class="icon icon--check"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"
+                />
+              </svg>
+            </span>
+          </span>
+          <span class="task-row__text">Отправить счёт за октябрь</span>
+        </label>
+      </div>
+    </section>
+  </main>
+
+  <script src="{% static 'files/js/main.js' %}"></script>
+</body>
+</html>
