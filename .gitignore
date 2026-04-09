@@ -6,3 +6,5 @@ tmp
 *.sqlite3
 *.db
 .env
+iam.json
+iam_token.txt
