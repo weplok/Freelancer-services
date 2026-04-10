@@ -55,8 +55,7 @@ def upload_part(bucket, key, headers, upload_id, part_number, chunk):
 def complete_upload(bucket, key, iam_token, upload_id, filename, e_tags):
     url = f"https://storage.yandexcloud.net/{bucket}/{key}?uploadId={upload_id}"
     headers = {
-        "Authorization": f"Bearer {iam_token}",
-        "Content-Disposition": filename.split('/')[-1],
+        "Authorization": f"Bearer {iam_token}"
     }
 
     root = ET.Element("CompleteMultipartUpload")
@@ -73,7 +72,7 @@ def complete_upload(bucket, key, iam_token, upload_id, filename, e_tags):
     tmp_name = f"tmp/{randint(10000000, 99999999)}.xml"
     tree.write(tmp_name, encoding="utf-8", xml_declaration=True)
 
-    response = requests.post(url, headers, files={"file": open(tmp_name, "rb")})
+    response = requests.post(url, headers=headers, files={"file": open(tmp_name, "rb")})
 
     return response.content.decode()
 
