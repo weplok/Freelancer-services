@@ -8,3 +8,4 @@ tmp
 .env
 iam.json
 iam_token.txt
+redisdata

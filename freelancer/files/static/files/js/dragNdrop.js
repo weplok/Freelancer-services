@@ -191,12 +191,47 @@ form.addEventListener('submit', (e) => {
     return;
   }
 
+  const uploadId = crypto.randomUUID();
+
   const formData = new FormData(form);
+  formData.append('upload_id', uploadId);
 
   uploadBlock.hidden = false;
   uploadPercent.textContent = '0%';
   uploadIndicator.style.transform = 'translateX(-100%)';
   showMessage('Начинаю загрузку...', false);
+
+  let pollingInterval = null;
+
+  const startPolling = () => {
+    pollingInterval = setInterval(async () => {
+      try {
+        const res = await fetch(`/upload_status/${uploadId}/`);
+        if (!res.ok) return;
+
+        const data = await res.json();
+        let progress = Number(data.progress);
+
+        // защита от мусора
+        if (isNaN(progress)) progress = 0;
+        if (progress < 0) progress = 0;
+        if (progress > 50) progress = 50;
+
+        const totalPercent = 50 + progress;
+
+        uploadPercent.textContent = `${Math.round(totalPercent * 100) / 100}%`;
+        uploadIndicator.style.transform = `translateX(-${100 - totalPercent}%)`;
+
+        // если достигли конца — стопаем polling
+        if (progress === 50) {
+          clearInterval(pollingInterval);
+        }
+
+      } catch (err) {
+        console.error('Polling error:', err);
+      }
+    }, 500);
+  };
 
   const xhr = new XMLHttpRequest();
   xhr.open('POST', form.action || window.location.href, true);
@@ -212,9 +247,10 @@ form.addEventListener('submit', (e) => {
 
   xhr.onload = () => {
     if (xhr.status >= 200 && xhr.status < 300) {
-      showMessage('Файл успешно загружен.', false);
-      uploadPercent.textContent = '100%';
-      uploadIndicator.style.transform = 'translateX(0%)';
+      showMessage('Файл загружен на сервер! 👍', false);
+
+      // запускаем polling второй стадии
+      startPolling();
 
       let response = {};
       try {

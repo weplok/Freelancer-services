@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "django_rq",
     "files",
 ]
 
@@ -124,3 +125,31 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": f"redis://{os.getenv('REDIS_USER')}:{os.getenv('REDIS_USER_PASSWORD')}@redis:6379",
+        "OPTIONS": {
+            "db": "0",
+        }
+    }
+}
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'redis',
+        'PORT': 6379,
+        'DB': 1,
+        'USERNAME': os.getenv('REDIS_USER'),
+        'PASSWORD': os.getenv('REDIS_USER_PASSWORD'),
+        'DEFAULT_TIMEOUT': 360,
+        'DEFAULT_RESULT_TTL': 800,
+    },
+    'high': {
+        'HOST': 'redis',
+        'PORT': 6379,
+        'DB': 1,
+    },
+}
+RQ_SHOW_ADMIN_LINK = True
