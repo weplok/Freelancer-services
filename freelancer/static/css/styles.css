@@ -965,6 +965,7 @@ svg {
   border-radius: .25rem;
   border: 1px solid hsl(var(--border));
   padding: 1rem;
+  margin-top: .5rem;
   color: hsl(var(--foreground));
   background: hsl(var(--background));
 }

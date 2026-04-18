@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<main class="container-main" style="padding: 3rem 0;">
+  <div class="card" style="max-width: 420px; margin: 0 auto;">
+
+    <div class="card__header">
+      <div class="card__title">Регистрация</div>
+      <div class="card__description">Создай аккаунт</div>
+    </div>
+
+    <form method="post" id="signupForm">
+      {% csrf_token %}
+
+      <div class="card__content demo-col">
+
+        <div>
+          <label class="label">Email</label>
+          <input name="email" class="input" required maxlength="254">
+        </div>
+
+        <div>
+          <label class="label">Username</label>
+          <input name="username" class="input" required>
+        </div>
+
+        <div>
+          <label class="label">Name</label>
+          <input name="name" class="input" required maxlength="25">
+        </div>
+
+        <div>
+          <label class="label">Пароль</label>
+          <input type="password" name="password1" class="input" required>
+        </div>
+
+        <div>
+          <label class="label">Повтор пароля</label>
+          <input type="password" name="password2" class="input" required>
+        </div>
+
+        <div id="signupError" class="alert alert--destructive" hidden></div>
+        {% if form.errors %}
+          <div class="alert alert--destructive">
+            {{ form.errors }}
+          </div>
+        {% endif %}
+
+      </div>
+
+      <div class="card__footer" style="justify-content: space-between;">
+        <button type="submit" class="btn btn--default">Submit</button>
+
+        <a href="{% url 'login' %}" class="btn btn--ghost">Login</a>
+      </div>
+    </form>
+
+  </div>
+</main>
+
+<script src="{% static 'accounts/js/signup.js' %}"></script>
+{% endblock %}

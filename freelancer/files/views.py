@@ -5,21 +5,23 @@ from concurrent.futures import ThreadPoolExecutor
 from random import randint
 
 import requests
+from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.http import JsonResponse
 from django.shortcuts import render
 from django_rq import job
 
 
-def homepage(request):
+@login_required
+def homepage_view(request):
     return render(request, "files/index.html")
 
 
-def test_ui(request):
+def test_ui_view(request):
     return render(request, "files/test_ui.html")
 
 
-def upload_file(request):
+def upload_file_view(request):
     if request.method == 'POST':
         file = request.FILES.get('file')
         upload_id = request.POST.get("upload_id")
@@ -42,6 +44,8 @@ def upload_file(request):
             for chunk in file.chunks():
                 destination.write(chunk)
 
+        # В этот момент файл на сервере, но загрузка в Хранилище еще не начата
+
         object_upload_task.delay(
             bucket_name,
             object_path,
@@ -55,13 +59,12 @@ def upload_file(request):
     return render(request, "files/upload_file.html")
 
 
-def get_upload_value(request, upload_id):
+def get_upload_value_view(request, upload_id):
     value = cache.get(f"object_{upload_id}", -1)
     data = {
         "progress": round(value, 2),
     }
     return JsonResponse(data)
-
 
 
 # Вернет upload_id составной загрузки, который нужно передавать со всеми остальными запросами загрузки
@@ -143,7 +146,9 @@ def object_upload(bucket, key, iam_token, filename, cache_upload_id):
     upload_id = start_upload(bucket, key, iam_token)
 
     with ThreadPoolExecutor(max_workers=6) as executor:
-        e_tags = list(executor.map(lambda p: upload_part(bucket, key, headers, upload_id, cache_upload_id, uploaded_parts, *p), parts))
+        e_tags = list(
+            executor.map(lambda p: upload_part(bucket, key, headers, upload_id, cache_upload_id, uploaded_parts, *p),
+                         parts))
 
     result = complete_upload(bucket, key, iam_token, upload_id, filename, e_tags, cache_upload_id)
 
