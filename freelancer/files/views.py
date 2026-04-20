@@ -13,8 +13,8 @@ from django_rq import job
 
 
 @login_required
-def homepage_view(request):
-    return render(request, "files/index.html")
+def personal_view(request):
+    return render(request, "files/profile.html")
 
 
 def test_ui_view(request):

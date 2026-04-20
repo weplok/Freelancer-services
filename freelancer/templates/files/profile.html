@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<main class="container-main" style="padding: 2rem 0 0; display: grid; gap: 2rem;">
+  <section style="display: grid; gap: 0.5rem;">
+    <h1 style="margin: 0; font-size: 2rem; line-height: 1.1; letter-spacing: -0.03em; font-weight: 700;">
+      Добро пожаловать, Иван
+    </h1>
+    <p style="margin: 0; color: var(--muted-foreground);">
+      Вот что происходит с вашими проектами сегодня.
+    </p>
+  </section>
+
+  <section aria-label="Ключевые показатели"
+           style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem;">
+    <article class="card" style="padding: 1rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:0.75rem;">
+        <span style="font-size:0.875rem; color: var(--muted-foreground);">Активных проектов</span>
+        <svg class="icon icon--md" style="color: var(--primary);" aria-hidden="true">
+          <use href="#icon-briefcase"></use>
+        </svg>
+      </div>
+      <div style="font-size: 1.875rem; line-height: 1; font-weight: 700;">12</div>
+    </article>
+
+    <article class="card" style="padding: 1rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:0.75rem;">
+        <span style="font-size:0.875rem; color: var(--muted-foreground);">Завершено</span>
+        <svg class="icon icon--md" style="color: var(--primary);" aria-hidden="true">
+          <use href="#icon-check-circle"></use>
+        </svg>
+      </div>
+      <div style="font-size: 1.875rem; line-height: 1; font-weight: 700;">86</div>
+    </article>
+
+      <article class="card" style="padding: 1rem;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:0.75rem;">
+          <span style="font-size:0.875rem; color: var(--muted-foreground);">Доход за месяц</span>
+          <svg class="icon icon--md" style="color: var(--primary);" aria-hidden="true"><use href="#icon-dollar"></use></svg>
+        </div>
+        <div style="font-size: 1.875rem; line-height: 1; font-weight: 700;">₽284 000</div>
+      </article>
+
+      <article class="card" style="padding: 1rem;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:0.75rem;">
+          <span style="font-size:0.875rem; color: var(--muted-foreground);">Рейтинг</span>
+          <svg class="icon icon--md" style="color: var(--primary);" aria-hidden="true"><use href="#icon-star"></use></svg>
+        </div>
+        <div style="font-size: 1.875rem; line-height: 1; font-weight: 700;">4.9</div>
+      </article>
+    </section>
+
+  <div style="display: grid; gap: 1.5rem;">
+    <section class="card" style="padding: 1.25rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom: 1rem;">
+        <h2 style="margin:0; font-size:1.25rem; line-height:1.2; font-weight:600;">Проекты</h2>
+        <button class="btn btn--ghost btn--sm" type="button" style="padding-inline: 0;">
+          Все проекты
+          <svg class="icon icon--sm" aria-hidden="true">
+            <use href="#icon-trending"></use>
+          </svg>
+        </button>
+      </div>
+
+      <div class="list list--projects" style="display:grid;">
+        <article style="padding: 1rem 0;">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:0.75rem;">
+            <div style="min-width:0;">
+              <h3 style="margin:0; font-size:0.95rem; font-weight:600; line-height:1.35;">Редизайн
+                интернет-магазина</h3>
+              <p style="margin:0.25rem 0 0; color: var(--muted-foreground); font-size:0.875rem;">ООО «Прогресс»</p>
+            </div>
+            <span class="badge badge--outline">В работе</span>
+          </div>
+          <div class="progress-line" style="display:flex; align-items:center; gap:0.75rem;">
+            <div class="progress" aria-hidden="true" style="flex:1;">
+              <div class="progress__indicator" style="width:65%;"></div>
+            </div>
+            <span style="width:3rem; text-align:right; font-size:0.75rem; color: var(--muted-foreground); font-weight:600;">65%</span>
+          </div>
+        </article>
+
+        <div class="separator"></div>
+
+        <article style="padding: 1rem 0;">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:0.75rem;">
+            <div style="min-width:0;">
+              <h3 style="margin:0; font-size:0.95rem; font-weight:600; line-height:1.35;">Мобильное приложение</h3>
+              <p style="margin:0.25rem 0 0; color: var(--muted-foreground); font-size:0.875rem;">Стартап «Волна»</p>
+            </div>
+            <span class="badge badge--outline">В работе</span>
+          </div>
+          <div class="progress-line" style="display:flex; align-items:center; gap:0.75rem;">
+            <div class="progress" aria-hidden="true" style="flex:1;">
+              <div class="progress__indicator" style="width:30%;"></div>
+            </div>
+            <span style="width:3rem; text-align:right; font-size:0.75rem; color: var(--muted-foreground); font-weight:600;">30%</span>
+          </div>
+        </article>
+
+        <div class="separator"></div>
+
+        <article style="padding: 1rem 0;">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:0.75rem;">
+            <div style="min-width:0;">
+              <h3 style="margin:0; font-size:0.95rem; font-weight:600; line-height:1.35;">Лендинг для конференции</h3>
+              <p style="margin:0.25rem 0 0; color: var(--muted-foreground); font-size:0.875rem;">EventPro</p>
+            </div>
+            <span class="badge badge--outline" style="border-color: var(--primary);">Ревью</span>
+          </div>
+          <div class="progress-line" style="display:flex; align-items:center; gap:0.75rem;">
+            <div class="progress" aria-hidden="true" style="flex:1;">
+              <div class="progress__indicator" style="width:90%;"></div>
+            </div>
+            <span style="width:3rem; text-align:right; font-size:0.75rem; color: var(--muted-foreground); font-weight:600;">90%</span>
+          </div>
+        </article>
+
+        <div class="separator"></div>
+
+        <article style="padding: 1rem 0 0;">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:0.75rem;">
+            <div style="min-width:0;">
+              <h3 style="margin:0; font-size:0.95rem; font-weight:600; line-height:1.35;">Корпоративный портал</h3>
+              <p style="margin:0.25rem 0 0; color: var(--muted-foreground); font-size:0.875rem;">ТехноГрупп</p>
+            </div>
+            <span class="badge badge--default">Завершён</span>
+          </div>
+          <div class="progress-line" style="display:flex; align-items:center; gap:0.75rem;">
+            <div class="progress" aria-hidden="true" style="flex:1;">
+              <div class="progress__indicator" style="width:100%;"></div>
+            </div>
+            <span style="width:3rem; text-align:right; font-size:0.75rem; color: var(--muted-foreground); font-weight:600;">100%</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="card" style="padding: 1.25rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom: 1rem;">
+        <h2 style="margin:0; font-size:1.25rem; line-height:1.2; font-weight:600;">Задачи</h2>
+        <button class="btn btn--ghost btn--icon" type="button" aria-label="Добавить задачу">
+          <svg class="icon icon--sm" aria-hidden="true">
+            <use href="#icon-plus"></use>
+          </svg>
+        </button>
+      </div>
+
+      <div class="list list--tasks">
+        <label class="task-row">
+            <span class="check">
+              <input type="checkbox" checked>
+              <span class="check__box"><svg class="icon icon--check" aria-hidden="true"><use
+                      href="#icon-check"></use></svg></span>
+            </span>
+          <span class="task-row__text task-row__text--done">Согласовать макеты главной страницы</span>
+        </label>
+
+        <label class="task-row">
+            <span class="check">
+              <input type="checkbox">
+              <span class="check__box"><svg class="icon icon--check" aria-hidden="true"><use
+                      href="#icon-check"></use></svg></span>
+            </span>
+          <span class="task-row__text">Подготовить прототип мобильной версии</span>
+        </label>
+
+        <label class="task-row">
+            <span class="check">
+              <input type="checkbox">
+              <span class="check__box"><svg class="icon icon--check" aria-hidden="true"><use
+                      href="#icon-check"></use></svg></span>
+            </span>
+          <span class="task-row__text">Отправить счёт за октябрь</span>
+        </label>
+
+        <label class="task-row">
+            <span class="check">
+              <input type="checkbox" checked>
+              <span class="check__box"><svg class="icon icon--check" aria-hidden="true"><use
+                      href="#icon-check"></use></svg></span>
+            </span>
+          <span class="task-row__text task-row__text--done">Обновить портфолио</span>
+        </label>
+
+        <label class="task-row">
+            <span class="check">
+              <input type="checkbox">
+              <span class="check__box"><svg class="icon icon--check" aria-hidden="true"><use
+                      href="#icon-check"></use></svg></span>
+            </span>
+          <span class="task-row__text">Созвон с клиентом в 15:00</span>
+        </label>
+      </div>
+    </section>
+  </div>
+
+  <div style="display: grid; gap: 1.5rem; grid-template-columns: repeat(1, minmax(0, 1fr));">
+    <section class="card" style="padding: 1.25rem;">
+      <h2 style="margin:0 0 1rem; font-size:1.25rem; line-height:1.2; font-weight:600;">Сообщения</h2>
+
+      <div class="list list--messages" style="display:grid;">
+        <article style="display:flex; align-items:flex-start; gap:0.75rem; padding: 0.875rem 0;">
+          <div class="avatar">
+            <div class="avatar__fallback">АК</div>
+          </div>
+          <div style="min-width:0; flex:1;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:0.75rem;">
+              <span style="font-size:0.875rem; font-weight:600;">Алексей К.</span>
+              <span style="display:inline-flex; align-items:center; gap:0.25rem; font-size:0.75rem; color: var(--muted-foreground);">
+                  <svg class="icon icon--sm" aria-hidden="true"><use href="#icon-clock"></use></svg>
+                  10 мин
+                </span>
+            </div>
+            <p style="margin:0.25rem 0 0; color: var(--muted-foreground); font-size:0.875rem;">Готовы утвердить
+              финальный вариант?</p>
+          </div>
+        </article>
+
+        <div class="separator"></div>
+
+        <article style="display:flex; align-items:flex-start; gap:0.75rem; padding: 0.875rem 0;">
+          <div class="avatar">
+            <div class="avatar__fallback">МС</div>
+          </div>
+          <div style="min-width:0; flex:1;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:0.75rem;">
+              <span style="font-size:0.875rem; font-weight:600;">Мария С.</span>
+              <span style="display:inline-flex; align-items:center; gap:0.25rem; font-size:0.75rem; color: var(--muted-foreground);">
+                  <svg class="icon icon--sm" aria-hidden="true"><use href="#icon-clock"></use></svg>
+                  1 час
+                </span>
+            </div>
+            <p style="margin:0.25rem 0 0; color: var(--muted-foreground); font-size:0.875rem;">Пришлите пожалуйста
+              обновлённые макеты</p>
+          </div>
+        </article>
+
+        <div class="separator"></div>
+
+        <article style="display:flex; align-items:flex-start; gap:0.75rem; padding: 0.875rem 0 0;">
+          <div class="avatar">
+            <div class="avatar__fallback">EP</div>
+          </div>
+          <div style="min-width:0; flex:1;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:0.75rem;">
+              <span style="font-size:0.875rem; font-weight:600;">EventPro</span>
+              <span style="display:inline-flex; align-items:center; gap:0.25rem; font-size:0.75rem; color: var(--muted-foreground);">
+                  <svg class="icon icon--sm" aria-hidden="true"><use href="#icon-clock"></use></svg>
+                  3 часа
+                </span>
+            </div>
+            <p style="margin:0.25rem 0 0; color: var(--muted-foreground); font-size:0.875rem;">Лендинг выглядит отлично,
+              спасибо!</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="card" style="padding: 1.25rem;">
+      <h2 style="margin:0 0 1rem; font-size:1.25rem; line-height:1.2; font-weight:600;">Элементы интерфейса</h2>
+
+      <div class="showcase" style="display:grid; gap: 1rem;">
+        <div class="showcase__block" style="display:grid; gap:0.75rem;">
+          <div class="eyebrow"
+               style="font-size:0.75rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color: var(--muted-foreground);">
+            Кнопки
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+            <button class="btn btn--default" type="button">Основная</button>
+            <button class="btn btn--secondary" type="button">Вторичная</button>
+            <button class="btn btn--outline" type="button">Контурная</button>
+            <button class="btn btn--ghost" type="button">Прозрачная</button>
+            <button class="btn btn--destructive" type="button">Удалить</button>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+            <button class="btn btn--default btn--sm" type="button">Маленькая</button>
+            <button class="btn btn--default btn--lg" type="button">Большая</button>
+            <button class="btn btn--default btn--icon" type="button" aria-label="Добавить">
+              <svg class="icon icon--sm" aria-hidden="true">
+                <use href="#icon-plus"></use>
+              </svg>
+            </button>
+            <button class="btn btn--default" type="button" disabled>Неактивна</button>
+          </div>
+        </div>
+
+        <div class="separator"></div>
+
+        <div class="showcase__block" style="display:grid; gap:0.75rem;">
+          <div class="eyebrow"
+               style="font-size:0.75rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color: var(--muted-foreground);">
+            Бейджи
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+            <span class="badge badge--default">По умолчанию</span>
+            <span class="badge badge--secondary">Вторичный</span>
+            <span class="badge badge--outline">Контурный</span>
+            <span class="badge badge--destructive">Ошибка</span>
+          </div>
+        </div>
+
+        <div class="separator"></div>
+
+        <div class="showcase__block" style="display:grid; gap:0.75rem;">
+          <div class="eyebrow"
+               style="font-size:0.75rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color: var(--muted-foreground);">
+            Поля ввода
+          </div>
+          <input class="input input--demo" type="text" placeholder="Введите текст...">
+          <input class="input input--demo" type="text" placeholder="Поиск по проектам..." disabled>
+        </div>
+
+        <div class="separator"></div>
+
+        <div class="showcase__block" style="display:grid; gap:0.75rem;">
+          <div class="eyebrow"
+               style="font-size:0.75rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color: var(--muted-foreground);">
+            Переключатели и прогресс
+          </div>
+
+          <div class="demo-row">
+            <button class="switch" type="button" data-state="checked" aria-pressed="true" data-switch>
+              <span class="switch__thumb"></span>
+            </button>
+            <span class="switch-row__text">Уведомления по email</span>
+          </div>
+
+          <label class="switch-row" style="display:flex; align-items:center; gap:0.75rem;">
+            <button class="switch" type="button" data-state="unchecked" aria-pressed="false" data-switch
+                    data-theme-toggle>
+              <span class="switch__thumb"></span>
+            </button>
+            <span class="switch-row__text">Тёмная тема (скоро)</span>
+          </label>
+
+          <div class="progress-demo" style="display:grid; gap:0.4rem;">
+            <div class="progress-demo__head"
+                 style="display:flex; justify-content:space-between; gap:1rem; font-size:0.875rem;">
+              <span>Загрузка файла</span>
+              <span class="progress-demo__value" style="color: var(--muted-foreground);">72%</span>
+            </div>
+            <div class="progress">
+              <div class="progress__indicator" style="width:72%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+{% endblock %}

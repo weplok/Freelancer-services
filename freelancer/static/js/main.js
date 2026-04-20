@@ -80,3 +80,28 @@ collapsibleTrigger?.addEventListener('click', (e) => {
     content.hidden = isOpen;
   }
 });
+
+
+const avatarTrigger = document.getElementById('avatarTrigger');
+const dropdownMenu = document.getElementById('dropdownMenu');
+const avatarDropdown = document.getElementById('avatarDropdown');
+
+// toggle по клику
+avatarTrigger.addEventListener('click', (e) => {
+e.stopPropagation();
+dropdownMenu.classList.toggle('active');
+});
+
+// клик вне — закрыть
+document.addEventListener('click', (e) => {
+if (!avatarDropdown.contains(e.target)) {
+  dropdownMenu.classList.remove('active');
+}
+});
+
+// опционально: закрытие по ESC
+document.addEventListener('keydown', (e) => {
+if (e.key === 'Escape') {
+  dropdownMenu.classList.remove('active');
+}
+});

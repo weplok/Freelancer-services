@@ -1,12 +1,21 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Фрилансер</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UI Showcase</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+  >
+
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
+
 <body>
 <svg aria-hidden="true" width="0" height="0" style="position:absolute; left:-9999px; top:-9999px; overflow:hidden">
   <symbol id="icon-zap" viewBox="0 0 24 24">
@@ -87,142 +96,12 @@
           stroke-linejoin="round"/>
   </symbol>
 </svg>
-
-<header class="topbar">
-  <div class="container-main topbar__inner">
-    <div class="brand">
-      <svg class="icon icon--lg brand__icon" aria-hidden="true">
-        <use href="#icon-zap"></use>
-      </svg>
-      <span class="brand__name">Фрилансер</span>
-    </div>
-
-    <nav class="desktop-nav" aria-label="Основная навигация">
-      <button class="desktop-nav__item" type="button">
-        <svg class="icon icon--sm" aria-hidden="true">
-          <use href="#icon-layout"></use>
-        </svg>
-        Обзор
-      </button>
-      <button class="desktop-nav__item" type="button">
-        <svg class="icon icon--sm" aria-hidden="true">
-          <use href="#icon-briefcase"></use>
-        </svg>
-        Проекты
-      </button>
-      <button class="desktop-nav__item" type="button">
-        <svg class="icon icon--sm" aria-hidden="true">
-          <use href="#icon-message"></use>
-        </svg>
-        Сообщения
-      </button>
-      <button class="desktop-nav__item" type="button">
-        <svg class="icon icon--sm" aria-hidden="true">
-          <use href="#icon-file"></use>
-        </svg>
-        Счета
-      </button>
-      <button class="desktop-nav__item" type="button">
-        <svg class="icon icon--sm" aria-hidden="true">
-          <use href="#icon-settings"></use>
-        </svg>
-        Настройки
-      </button>
-    </nav>
-
-    <div class="toolbar">
-      <label class="search search--desktop">
-        <svg class="icon icon--sm search__icon" aria-hidden="true">
-          <use href="#icon-search"></use>
-        </svg>
-        <input class="input input--search" type="search" placeholder="Поиск..." aria-label="Поиск">
-      </label>
-
-      <button class="btn btn--default btn--sm toolbar__new-project" type="button">
-        <svg class="icon icon--sm" aria-hidden="true">
-          <use href="#icon-plus"></use>
-        </svg>
-      </button>
-
-      <button class="menu-btn" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mobileMenu"
-              data-menu-toggle>
-        <svg class="icon icon--md menu-btn__icon menu-btn__icon--open" aria-hidden="true">
-          <use href="#icon-menu"></use>
-        </svg>
-        <svg class="icon icon--md menu-btn__icon menu-btn__icon--close" aria-hidden="true">
-          <use href="#icon-x"></use>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <nav class="mobile-menu" id="mobileMenu" aria-label="Мобильная навигация">
-    <div class="container-main mobile-menu__inner">
-      <button class="mobile-menu__item" type="button">
-        <svg class="icon icon--md" aria-hidden="true">
-          <use href="#icon-layout"></use>
-        </svg>
-        Обзор
-      </button>
-      <button class="mobile-menu__item" type="button">
-        <svg class="icon icon--md" aria-hidden="true">
-          <use href="#icon-briefcase"></use>
-        </svg>
-        Проекты
-      </button>
-      <button class="mobile-menu__item" type="button">
-        <svg class="icon icon--md" aria-hidden="true">
-          <use href="#icon-message"></use>
-        </svg>
-        Сообщения
-      </button>
-      <button class="mobile-menu__item" type="button">
-        <svg class="icon icon--md" aria-hidden="true">
-          <use href="#icon-file"></use>
-        </svg>
-        Счета
-      </button>
-      <button class="mobile-menu__item" type="button">
-        <svg class="icon icon--md" aria-hidden="true">
-          <use href="#icon-settings"></use>
-        </svg>
-        Настройки
-      </button>
-      <div class="separator"></div>
-      <label class="search search--mobile">
-        <svg class="icon icon--sm search__icon" aria-hidden="true">
-          <use href="#icon-search"></use>
-        </svg>
-        <input class="input input--search" type="search" placeholder="Поиск..." aria-label="Поиск">
-      </label>
-      <button class="btn btn--default btn--full" type="button">
-        <svg class="icon icon--sm" aria-hidden="true">
-          <use href="#icon-plus"></use>
-        </svg>
-        Новый проект
-      </button>
-    </div>
-  </nav>
-</header>
+{% if user.is_authenticated %}
+  {% include "includes/header_auth.html" %}
+{% else %}
+  {% include "includes/header_unauth.html" %}
+{% endif %}
 
 {% block content %} {% endblock %}
 
-<footer class="footer" style="margin-top: 2.5rem;">
-  <div class="container-main footer__inner">
-    <div class="footer__brand">
-      <svg class="icon icon--sm brand__icon" aria-hidden="true">
-        <use href="#icon-zap"></use>
-      </svg>
-      <span>Фрилансер © 2026</span>
-    </div>
-    <div class="footer__links">
-      <button type="button" class="footer__link">Помощь</button>
-      <button type="button" class="footer__link">Условия</button>
-      <button type="button" class="footer__link">Контакты</button>
-    </div>
-  </div>
-</footer>
-
-<script src="{% static 'files/js/main.js' %}"></script>
-</body>
-</html>
+{% include "includes/footer.html" %}

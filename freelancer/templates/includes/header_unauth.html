@@ -1,0 +1,69 @@
+<header class="topbar">
+  <div class="container-main topbar__inner">
+    <a href="{% url 'homepage' %}">
+      <div class="brand">
+        <svg class="icon icon--lg brand__icon" aria-hidden="true">
+          <use href="#icon-zap"></use>
+        </svg>
+        <span class="brand__name">Фрилансер</span>
+      </div>
+    </a>
+
+    <div class="toolbar">
+      <a href="{% url 'signup' %}">
+        <button class="btn btn--outline" type="button">Зарегистрироваться</button>
+      </a>
+      <a href="{% url 'login' %}">
+        <button class="btn btn--default" type="button">Войти</button>
+      </a>
+    </div>
+  </div>
+
+  <nav class="mobile-menu" id="mobileMenu" aria-label="Мобильная навигация">
+    <div class="container-main mobile-menu__inner">
+      <button class="mobile-menu__item" type="button">
+        <svg class="icon icon--md" aria-hidden="true">
+          <use href="#icon-layout"></use>
+        </svg>
+        Обзор
+      </button>
+      <button class="mobile-menu__item" type="button">
+        <svg class="icon icon--md" aria-hidden="true">
+          <use href="#icon-briefcase"></use>
+        </svg>
+        Проекты
+      </button>
+      <button class="mobile-menu__item" type="button">
+        <svg class="icon icon--md" aria-hidden="true">
+          <use href="#icon-message"></use>
+        </svg>
+        Сообщения
+      </button>
+      <button class="mobile-menu__item" type="button">
+        <svg class="icon icon--md" aria-hidden="true">
+          <use href="#icon-file"></use>
+        </svg>
+        Счета
+      </button>
+      <button class="mobile-menu__item" type="button">
+        <svg class="icon icon--md" aria-hidden="true">
+          <use href="#icon-settings"></use>
+        </svg>
+        Настройки
+      </button>
+      <div class="separator"></div>
+      <label class="search search--mobile">
+        <svg class="icon icon--sm search__icon" aria-hidden="true">
+          <use href="#icon-search"></use>
+        </svg>
+        <input class="input input--search" type="search" placeholder="Поиск..." aria-label="Поиск">
+      </label>
+      <button class="btn btn--default btn--full" type="button">
+        <svg class="icon icon--sm" aria-hidden="true">
+          <use href="#icon-plus"></use>
+        </svg>
+        Новый проект
+      </button>
+    </div>
+  </nav>
+</header>
