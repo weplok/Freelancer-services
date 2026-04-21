@@ -1,153 +1,162 @@
 <header class="topbar">
-  <div class="container-main topbar__inner">
-    <a href="{% url 'homepage' %}">
-      <div class="brand">
-        <svg class="icon icon--lg brand__icon" aria-hidden="true">
-          <use href="#icon-zap"></use>
-        </svg>
-        <span class="brand__name">Фрилансер</span>
-      </div>
-    </a>
-
-    <nav class="desktop-nav" aria-label="Основная навигация">
-      <button class="desktop-nav__item" type="button">
-        <svg class="icon icon--sm" aria-hidden="true">
-          <use href="#icon-layout"></use>
-        </svg>
-        Обзор
-      </button>
-      <button class="desktop-nav__item" type="button">
-        <svg class="icon icon--sm" aria-hidden="true">
-          <use href="#icon-briefcase"></use>
-        </svg>
-        Проекты
-      </button>
-      <button class="desktop-nav__item" type="button">
-        <svg class="icon icon--sm" aria-hidden="true">
-          <use href="#icon-message"></use>
-        </svg>
-        Сообщения
-      </button>
-      <button class="desktop-nav__item" type="button">
-        <svg class="icon icon--sm" aria-hidden="true">
-          <use href="#icon-file"></use>
-        </svg>
-        Счета
-      </button>
-      <button class="desktop-nav__item" type="button">
-        <svg class="icon icon--sm" aria-hidden="true">
-          <use href="#icon-settings"></use>
-        </svg>
-        Настройки
-      </button>
-    </nav>
-
-    <div class="toolbar">
-      <button class="btn btn--default btn--sm" type="button">
-        <span class="icon icon--sm">+</span>
-      </button>
-
-      <div class="avatar-dropdown" id="avatarDropdown">
-        <div class="avatar" id="avatarTrigger">
-          <img class="avatar__image" alt="Аватарка пользователя" src="https://picsum.photos/80?random=31">
-        </div>
-
-        <div class="dropdown-menu" id="dropdownMenu">
-          <div class="dropdown-menu__content">
-            <div class="dropdown-menu__label">
-              <div class="dropdown-user">
-
-                <div class="avatar">
-                  <img class="avatar__image" alt="Аватарка пользователя" src="https://picsum.photos/80?random=31">
-                </div>
-
-                <div class="dropdown-user__info">
-                  <div class="dropdown-user__name">Имя</div>
-                  <div class="dropdown-user__nickname">@nickname</div>
-                  <a href="{% url 'profile' %}">
-                    <button class="btn btn--link dropdown-user__link" type="button">
-                      Перейти в профиль
-                    </button>
-                  </a>
-                </div>
-
-              </div>
+    <div class="container-main topbar__inner">
+        <a href="{% url 'homepage' %}">
+            <div class="brand">
+                <svg class="icon icon--lg brand__icon" aria-hidden="true">
+                    <use href="#icon-zap"></use>
+                </svg>
+                <span class="brand__name">Фрилансер</span>
             </div>
+        </a>
 
-            <div class="dropdown-menu__separator"></div>
-
-            <div class="dropdown-menu__item">
-              <label class="switch-row" style="display:flex; align-items:center; gap:0.75rem;">
-                <button class="switch" type="button" data-state="unchecked" aria-pressed="false" data-switch
-                        data-theme-toggle>
-                  <span class="switch__thumb"></span>
+        <nav class="desktop-nav" aria-label="Основная навигация">
+            <button class="desktop-nav__item" type="button">
+                <svg class="icon icon--sm" aria-hidden="true">
+                    <use href="#icon-layout"></use>
+                </svg>
+                Обзор
+            </button>
+            <a href="{% url 'all_projects' %}">
+                <button class="desktop-nav__item" type="button">
+                    <svg class="icon icon--sm" aria-hidden="true">
+                        <use href="#icon-briefcase"></use>
+                    </svg>
+                    Проекты
                 </button>
-                <span class="switch-row__text">Тёмная тема</span>
-              </label>
-            </div>
-            <div class="dropdown-menu__item">Billing</div>
-            <div class="dropdown-menu__separator"></div>
-            <a href="{% url 'logout' %}">
-              <div class="dropdown-menu__item">
-                Выйти <span class="dropdown-menu__shortcut">⌘Q</span>
-              </div>
             </a>
-          </div>
+            <button class="desktop-nav__item" type="button">
+                <svg class="icon icon--sm" aria-hidden="true">
+                    <use href="#icon-message"></use>
+                </svg>
+                Сообщения
+            </button>
+            <button class="desktop-nav__item" type="button">
+                <svg class="icon icon--sm" aria-hidden="true">
+                    <use href="#icon-file"></use>
+                </svg>
+                Счета
+            </button>
+            <button class="desktop-nav__item" type="button">
+                <svg class="icon icon--sm" aria-hidden="true">
+                    <use href="#icon-settings"></use>
+                </svg>
+                Настройки
+            </button>
+        </nav>
+
+        <div class="toolbar">
+            <button class="btn btn--default btn--sm" type="button">
+                <span class="icon icon--sm">+</span>
+            </button>
+
+            <div class="avatar-dropdown" id="avatarDropdown">
+                <div class="avatar" id="avatarTrigger">
+                    <img class="avatar__image" alt="Аватарка пользователя" src="https://picsum.photos/80?random=31">
+                </div>
+
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <div class="dropdown-menu__content">
+                        <div class="dropdown-menu__label">
+                            <div class="dropdown-user">
+
+                                <div class="avatar">
+                                    <img class="avatar__image" alt="Аватарка пользователя"
+                                         src="https://picsum.photos/80?random=31">
+                                </div>
+
+                                <div class="dropdown-user__info">
+                                    <div class="dropdown-user__name">Имя</div>
+                                    <div class="dropdown-user__nickname">@nickname</div>
+                                    <a href="{% url 'profile' %}">
+                                        <button class="btn btn--link dropdown-user__link" type="button">
+                                            Перейти в профиль
+                                        </button>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="dropdown-menu__separator"></div>
+
+                        <div class="dropdown-menu__item">
+                            <label class="switch-row" style="display:flex; align-items:center; gap:0.75rem;">
+                                <button class="switch" type="button" data-state="unchecked" aria-pressed="false"
+                                        data-switch
+                                        data-theme-toggle>
+                                    <span class="switch__thumb"></span>
+                                </button>
+                                <span class="switch-row__text">Тёмная тема</span>
+                            </label>
+                        </div>
+                        <a href="{% url 'test_ui' %}">
+                            <div class="dropdown-menu__item">
+                                <span>UI kit</span>
+                                <span class="dropdown-menu__shortcut"><span class="badge badge--secondary">dev</span></span>
+                            </div>
+                        </a>
+                        <div class="dropdown-menu__separator"></div>
+                        <a href="{% url 'logout' %}">
+                            <div class="dropdown-menu__item">
+                                Выйти
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn--ghost btn--icon menu-btn" type="button" aria-label="Меню" aria-expanded="false"
+                    data-menu-toggle>
+                <span class="icon icon--md">☰</span>
+            </button>
         </div>
-      </div>
-
-      <button class="btn btn--ghost btn--icon menu-btn" type="button" aria-label="Меню" aria-expanded="false"
-              data-menu-toggle>
-        <span class="icon icon--md">☰</span>
-      </button>
     </div>
-  </div>
 
-  <nav class="mobile-menu" id="mobileMenu" aria-label="Мобильная навигация">
-    <div class="container-main mobile-menu__inner">
-      <button class="mobile-menu__item" type="button">
-        <svg class="icon icon--md" aria-hidden="true">
-          <use href="#icon-layout"></use>
-        </svg>
-        Обзор
-      </button>
-      <button class="mobile-menu__item" type="button">
-        <svg class="icon icon--md" aria-hidden="true">
-          <use href="#icon-briefcase"></use>
-        </svg>
-        Проекты
-      </button>
-      <button class="mobile-menu__item" type="button">
-        <svg class="icon icon--md" aria-hidden="true">
-          <use href="#icon-message"></use>
-        </svg>
-        Сообщения
-      </button>
-      <button class="mobile-menu__item" type="button">
-        <svg class="icon icon--md" aria-hidden="true">
-          <use href="#icon-file"></use>
-        </svg>
-        Счета
-      </button>
-      <button class="mobile-menu__item" type="button">
-        <svg class="icon icon--md" aria-hidden="true">
-          <use href="#icon-settings"></use>
-        </svg>
-        Настройки
-      </button>
-      <div class="separator"></div>
-      <label class="search search--mobile">
-        <svg class="icon icon--sm search__icon" aria-hidden="true">
-          <use href="#icon-search"></use>
-        </svg>
-        <input class="input input--search" type="search" placeholder="Поиск..." aria-label="Поиск">
-      </label>
-      <button class="btn btn--default btn--full" type="button">
-        <svg class="icon icon--sm" aria-hidden="true">
-          <use href="#icon-plus"></use>
-        </svg>
-        Новый проект
-      </button>
-    </div>
-  </nav>
+    <nav class="mobile-menu" id="mobileMenu" aria-label="Мобильная навигация">
+        <div class="container-main mobile-menu__inner">
+            <button class="mobile-menu__item" type="button">
+                <svg class="icon icon--md" aria-hidden="true">
+                    <use href="#icon-layout"></use>
+                </svg>
+                Обзор
+            </button>
+            <button class="mobile-menu__item" type="button">
+                <svg class="icon icon--md" aria-hidden="true">
+                    <use href="#icon-briefcase"></use>
+                </svg>
+                Проекты
+            </button>
+            <button class="mobile-menu__item" type="button">
+                <svg class="icon icon--md" aria-hidden="true">
+                    <use href="#icon-message"></use>
+                </svg>
+                Сообщения
+            </button>
+            <button class="mobile-menu__item" type="button">
+                <svg class="icon icon--md" aria-hidden="true">
+                    <use href="#icon-file"></use>
+                </svg>
+                Счета
+            </button>
+            <button class="mobile-menu__item" type="button">
+                <svg class="icon icon--md" aria-hidden="true">
+                    <use href="#icon-settings"></use>
+                </svg>
+                Настройки
+            </button>
+            <div class="separator"></div>
+            <label class="search search--mobile">
+                <svg class="icon icon--sm search__icon" aria-hidden="true">
+                    <use href="#icon-search"></use>
+                </svg>
+                <input class="input input--search" type="search" placeholder="Поиск..." aria-label="Поиск">
+            </label>
+            <button class="btn btn--default btn--full" type="button">
+                <svg class="icon icon--sm" aria-hidden="true">
+                    <use href="#icon-plus"></use>
+                </svg>
+                Новый проект
+            </button>
+        </div>
+    </nav>
 </header>

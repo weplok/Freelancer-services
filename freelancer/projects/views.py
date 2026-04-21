@@ -5,20 +5,14 @@ from concurrent.futures import ThreadPoolExecutor
 from random import randint
 
 import requests
-from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.http import JsonResponse
 from django.shortcuts import render
 from django_rq import job
 
 
-@login_required
-def personal_view(request):
-    return render(request, "files/profile.html")
-
-
-def test_ui_view(request):
-    return render(request, "files/test_ui.html")
+def all_projects_view(request):
+    return render(request, "projects/all_projects.html")
 
 
 def upload_file_view(request):
@@ -56,7 +50,7 @@ def upload_file_view(request):
 
         return JsonResponse({'status': 'ok', 'filename': file.name})
 
-    return render(request, "files/upload_file.html")
+    return render(request, "projects/upload_file.html")
 
 
 def get_upload_value_view(request, upload_id):
