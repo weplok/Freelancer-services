@@ -18,6 +18,7 @@ const messageEl = document.getElementById('form-message');
 const resetBtn = document.getElementById('reset-btn');
 
 let selectedFile = null;
+let pollingInterval = null;
 
 const icons = {
   default: `
@@ -69,6 +70,7 @@ function getExtension(filename) {
 
 function showMessage(text, isError = false) {
   messageEl.textContent = text;
+  messageEl.hidden = false
   messageEl.style.color = isError ? 'crimson' : 'inherit';
 }
 
@@ -78,8 +80,8 @@ function setSelectedFile(file) {
   if (!file) {
     filePreview.hidden = true;
     dropZone.classList.remove('drop-zone--filled');
-    dropZoneTitle.textContent = 'Перетащи файл сюда или кликни';
-    dropZoneHint.textContent = 'После drop появятся название, размер и расширение.';
+    dropZoneTitle.textContent = 'Перетащите файл сюда или кликните';
+    dropZoneHint.textContent = 'Вы можете загрузить медиа-файл до 2 ГБ';
     setIcon('default');
     return;
   }
@@ -171,6 +173,7 @@ resetBtn.addEventListener('click', () => {
   uploadPercent.textContent = '0%';
   uploadIndicator.style.transform = 'translateX(-100%)';
   setSelectedFile(null);
+  clearInterval(pollingInterval);
   showMessage('Форма очищена.', false);
 });
 
@@ -200,8 +203,6 @@ form.addEventListener('submit', (e) => {
   uploadPercent.textContent = '0%';
   uploadIndicator.style.transform = 'translateX(-100%)';
   showMessage('Начинаю загрузку...', false);
-
-  let pollingInterval = null;
 
   const startPolling = () => {
     pollingInterval = setInterval(async () => {

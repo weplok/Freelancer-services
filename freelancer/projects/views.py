@@ -11,6 +11,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from django_rq import job
 
+from .forms import ProjectForm, FileForm
+
 
 def all_projects_view(request):
     context = {
@@ -29,26 +31,28 @@ def all_projects_view(request):
 
 
 def project_create_view(request):
+    project_form = ProjectForm(data=request.POST or None)
+
     if request.method == "POST":
-        file = request.FILES.get("file")
-        upload_id = request.POST.get("upload_id")
-        name = request.POST.get("name")
-        description = request.POST.get("description")
-        customer = request.POST.get("customer")
+        if project_form.is_valid():
+            name = request.POST.get("name")
+            description = request.POST.get("description")
+            customer = request.POST.get("customer")
 
-        upload_file(file, upload_id)
-
-    return render(request, "projects/project_create.html")
+    return render(request, "projects/project_create.html", {"project_form": project_form})
 
 
 def upload_file_view(request):
+    upload_form = FileForm(data=request.POST or None)
+
     if request.method == 'POST':
-        file = request.FILES.get('file')
-        upload_id = request.POST.get("upload_id")
+        if upload_form.is_valid():
+            file = request.FILES.get('file')
+            upload_id = request.POST.get("upload_id")
 
-        return upload_file(file, upload_id)
+            return upload_file(file, upload_id)
 
-    return render(request, "projects/upload_file.html")
+    return render(request, "projects/upload_file.html", {"upload_form": upload_form})
 
 
 def upload_file(file, upload_id):

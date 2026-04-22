@@ -1,4 +1,4 @@
-from django.forms import Form
+from django.forms import Form, FileField
 from django import forms
 
 from .models import ProjectModel, FileModel
@@ -15,4 +15,8 @@ class ProjectForm(Form):
 
 
 class FileForm(Form):
-    pass
+    file = FileField()
+
+    class Meta:
+        model = FileModel
+        fields = ("file",)
