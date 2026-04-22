@@ -1,8 +1,109 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block content %}
+<main class="container-main projects-page">
+  <section class="projects-page__header">
+    <div class="projects-page__title-block">
+      <h1 class="projects-page__title">Проекты</h1>
+      <p class="projects-page__subtitle">
+        Сетка карточек проектов с быстрыми фильтрами и отдельной карточкой создания.
+      </p>
+    </div>
 
-Все проекты
+    <div class="projects-page__summary">
+      <span class="projects-page__summary-label">Всего проектов</span>
+      <strong class="projects-page__summary-value">{{ projects|length }}</strong>
+    </div>
+  </section>
 
+  <section class="projects-filters card">
+    <div class="projects-filters__header">
+      <div>
+        <h2 class="projects-filters__title">Фильтры</h2>
+        <p class="projects-filters__subtitle">
+          Статусы, дата загрузки и заказчик могут использоваться одновременно.
+        </p>
+      </div>
+
+      {% if has_filters %}
+        <a class="btn btn--ghost btn--sm" href="{{ reset_filters_url|default:'#' }}">Сбросить</a>
+      {% endif %}
+    </div>
+
+    <div class="projects-filters__grid">
+      <form method="get" class="projects-filter-group">
+        {% if current_date %}<input type="hidden" name="date" value="{{ current_date }}">{% endif %}
+        {% if current_customer %}<input type="hidden" name="customer" value="{{ current_customer }}">{% endif %}
+        <div class="projects-filter-group__title">Статус</div>
+        <div class="projects-filter-group__controls">
+          {% for item in status_filters %}
+            <button
+              type="submit"
+              name="status"
+              value="{{ item.value }}"
+              class="btn btn--outline btn--sm projects-filter-chip{% if item.active %} is-active{% endif %}"
+              {% if item.active %}aria-pressed="true"{% else %}aria-pressed="false"{% endif %}
+            >
+              {{ item.label }}
+            </button>
+          {% endfor %}
+        </div>
+      </form>
+
+      <form method="get" class="projects-filter-group">
+        {% if current_status %}<input type="hidden" name="status" value="{{ current_status }}">{% endif %}
+        {% if current_customer %}<input type="hidden" name="customer" value="{{ current_customer }}">{% endif %}
+        <div class="projects-filter-group__title">Дата загрузки</div>
+        <div class="projects-filter-group__controls">
+          {% for item in date_filters %}
+            <button
+              type="submit"
+              name="date"
+              value="{{ item.value }}"
+              class="btn btn--outline btn--sm projects-filter-chip{% if item.active %} is-active{% endif %}"
+              {% if item.active %}aria-pressed="true"{% else %}aria-pressed="false"{% endif %}
+            >
+              {{ item.label }}
+            </button>
+          {% endfor %}
+        </div>
+      </form>
+
+      <form method="get" class="projects-filter-group">
+        {% if current_status %}<input type="hidden" name="status" value="{{ current_status }}">{% endif %}
+        {% if current_date %}<input type="hidden" name="date" value="{{ current_date }}">{% endif %}
+        <div class="projects-filter-group__title">Заказчик</div>
+        <div class="projects-filter-group__controls">
+          {% for item in customer_filters %}
+            <button
+              type="submit"
+              name="customer"
+              value="{{ item.value }}"
+              class="btn btn--outline btn--sm projects-filter-chip{% if item.active %} is-active{% endif %}"
+              {% if item.active %}aria-pressed="true"{% else %}aria-pressed="false"{% endif %}
+            >
+              {{ item.label }}
+            </button>
+          {% endfor %}
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="projects-grid">
+    {% include 'projects/includes/project_create_card.html' %}
+
+    {% for project in projects %}
+      {% include 'projects/includes/project_card.html' with project=project %}
+    {% empty %}
+      <div class="projects-empty card">
+        <div class="projects-empty__title">Проектов пока нет</div>
+        <div class="projects-empty__description">
+          Создайте первый проект, чтобы он появился в этой сетке.
+        </div>
+      </div>
+    {% endfor %}
+  </section>
+</main>
 {% endblock %}

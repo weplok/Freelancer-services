@@ -8,11 +8,37 @@ import requests
 from django.core.cache import cache
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.urls import reverse
 from django_rq import job
 
 
 def all_projects_view(request):
-    return render(request, "projects/all_projects.html")
+    context = {
+        "projects": [],
+        "status_filters": [{"value": "all", "label": "Все", "active": True}, ...],
+        "date_filters": [{"value": "recent", "label": "Сначала новые", "active": False}, ...],
+        "customer_filters": [{"value": "acme", "label": "ACME", "active": False}, ...],
+        "current_status": request.GET.get("status", ""),
+        "current_date": request.GET.get("date", ""),
+        "current_customer": request.GET.get("customer", ""),
+        "has_filters": bool(request.GET),
+        "reset_filters_url": reverse("all_projects"),
+        "create_project_url": reverse("project_create"),
+    }
+    return render(request, "projects/all_projects.html", context)
+
+
+def project_create_view(request):
+    if request.method == "POST":
+        file = request.FILES.get("file")
+        upload_id = request.POST.get("upload_id")
+        name = request.POST.get("name")
+        description = request.POST.get("description")
+        customer = request.POST.get("customer")
+
+        upload_file(file, upload_id)
+
+    return render(request, "projects/project_create.html")
 
 
 def upload_file_view(request):
@@ -20,37 +46,41 @@ def upload_file_view(request):
         file = request.FILES.get('file')
         upload_id = request.POST.get("upload_id")
 
-        if not file:
-            return JsonResponse({'error': 'Нет файла'}, status=400)
-
-        cache_upload_id = f"object_{upload_id}"
-        cache.set(cache_upload_id, 0, timeout=5 * 60)
-
-        with open("iam_token.txt", "r", encoding="utf-8") as token_file:
-            iam_token = token_file.read()
-
-        bucket_name = "test-without-versions"
-
-        filename = f"media/{uuid.uuid4()}_{file.name}"
-        object_path = f"{datetime.datetime.now().timestamp()}_{filename.split('/')[-1]}"
-
-        with open(f'{filename}', 'wb+') as destination:
-            for chunk in file.chunks():
-                destination.write(chunk)
-
-        # В этот момент файл на сервере, но загрузка в Хранилище еще не начата
-
-        object_upload_task.delay(
-            bucket_name,
-            object_path,
-            iam_token,
-            filename,
-            cache_upload_id,
-        )
-
-        return JsonResponse({'status': 'ok', 'filename': file.name})
+        return upload_file(file, upload_id)
 
     return render(request, "projects/upload_file.html")
+
+
+def upload_file(file, upload_id):
+    if not file:
+        return JsonResponse({'error': 'Нет файла'}, status=400)
+
+    cache_upload_id = f"object_{upload_id}"
+    cache.set(cache_upload_id, 0, timeout=5 * 60)
+
+    with open("iam_token.txt", "r", encoding="utf-8") as token_file:
+        iam_token = token_file.read()
+
+    bucket_name = "test-without-versions"
+
+    filename = f"media/{uuid.uuid4()}_{file.name}"
+    object_path = f"{datetime.datetime.now().timestamp()}_{filename.split('/')[-1]}"
+
+    with open(f'{filename}', 'wb+') as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
+
+    # В этот момент файл на сервере, но загрузка в Хранилище еще не начата
+
+    object_upload_task.delay(
+        bucket_name,
+        object_path,
+        iam_token,
+        filename,
+        cache_upload_id,
+    )
+
+    return JsonResponse({'status': 'ok', 'filename': file.name})
 
 
 def get_upload_value_view(request, upload_id):

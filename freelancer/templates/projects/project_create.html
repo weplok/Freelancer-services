@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<main class="container-main" style="padding: 2rem 0;">
+
+  <form method="post" enctype="multipart/form-data"
+        class="project-create">
+
+    {% csrf_token %}
+
+    <div class="project-create__grid">
+
+      <!-- ЛЕВАЯ ЧАСТЬ -->
+      <div class="card project-create__side">
+
+        <div class="card__header">
+          <div class="card__title">Первая версия проекта</div>
+          <div class="card__description">
+            Предзагрузите первую версию файла для определения настроек проекта
+          </div>
+        </div>
+
+        <div class="card__content">
+          {% include 'projects/includes/upload_block.html' %}
+        </div>
+
+      </div>
+
+      <!-- ПРАВАЯ ЧАСТЬ -->
+      <div class="card project-create__side">
+
+        <div class="card__header">
+          <div class="card__title">Информация о проекте</div>
+        </div>
+
+        <div class="card__content project-form">
+
+          <div class="project-form__field">
+            <label class="label">Название</label>
+            <input class="input" name="name" placeholder="Название проекта">
+          </div>
+
+          <div class="project-form__field">
+            <label class="label">Описание</label>
+            <textarea class="textarea" name="description"
+                      placeholder="Подходящее место для ТЗ"></textarea>
+          </div>
+
+          <div class="project-form__field">
+            <label class="label">Заказчик</label>
+            <input class="input" name="customer"
+                   placeholder="Имя или контакт">
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- КНОПКА -->
+    <div class="project-create__actions">
+      <button class="btn btn--default btn--lg" type="submit">
+        Создать проект
+      </button>
+    </div>
+
+  </form>
+
+</main>
+
+<script src="{% static 'projects/js/dragNdrop.js' %}"></script>
+
+{% endblock %}
