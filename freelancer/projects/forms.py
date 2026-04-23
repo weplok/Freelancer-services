@@ -6,7 +6,7 @@ from .models import ProjectModel, FileModel
 
 class ProjectForm(Form):
     name = forms.CharField(max_length=254)
-    description = forms.Textarea()
+    description = forms.CharField(widget=forms.Textarea)
     customer = forms.CharField(max_length=100)
 
     class Meta:

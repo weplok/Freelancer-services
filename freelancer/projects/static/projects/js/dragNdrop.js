@@ -17,6 +17,8 @@ const uploadIndicator = document.getElementById('upload-indicator');
 const messageEl = document.getElementById('form-message');
 const resetBtn = document.getElementById('reset-btn');
 
+const ProjectSubmitBtn = document.getElementById('project-submit');
+
 let selectedFile = null;
 let pollingInterval = null;
 
@@ -175,6 +177,9 @@ resetBtn.addEventListener('click', () => {
   setSelectedFile(null);
   clearInterval(pollingInterval);
   showMessage('Форма очищена.', false);
+  ProjectSubmitBtn.disabled = false;
+  ProjectSubmitBtn.textContent = "Создать проект";
+  // TODO: Если прожали ресет - удалить загруженный файл из БД и хранилища
 });
 
 function getCSRFToken() {
@@ -204,10 +209,13 @@ form.addEventListener('submit', (e) => {
   uploadIndicator.style.transform = 'translateX(-100%)';
   showMessage('Начинаю загрузку...', false);
 
+  ProjectSubmitBtn.disabled = true;
+  ProjectSubmitBtn.textContent = "Дождитесь конца загрузки...";
+
   const startPolling = () => {
     pollingInterval = setInterval(async () => {
       try {
-        const res = await fetch(`/upload_status/${uploadId}/`);
+        const res = await fetch(`/projects/upload_status/${uploadId}/`);
         if (!res.ok) return;
 
         const data = await res.json();
@@ -226,6 +234,9 @@ form.addEventListener('submit', (e) => {
         // если достигли конца — стопаем polling
         if (progress === 50) {
           clearInterval(pollingInterval);
+          showMessage('Файл загружен на сервер! 👍', false);
+          ProjectSubmitBtn.disabled = false;
+          ProjectSubmitBtn.textContent = "Создать проект";
         }
 
       } catch (err) {
@@ -248,7 +259,7 @@ form.addEventListener('submit', (e) => {
 
   xhr.onload = () => {
     if (xhr.status >= 200 && xhr.status < 300) {
-      showMessage('Файл загружен на сервер! 👍', false);
+      showMessage('Файл обрабатывается. Это может занять некоторое время', false);
 
       // запускаем polling второй стадии
       startPolling();
@@ -261,11 +272,15 @@ form.addEventListener('submit', (e) => {
       console.log('Server response:', response);
     } else {
       showMessage('Ошибка загрузки файла.', true);
+      ProjectSubmitBtn.disabled = false;
+      ProjectSubmitBtn.textContent = "Создать проект";
     }
   };
 
   xhr.onerror = () => {
     showMessage('Сетевая ошибка при загрузке.', true);
+    ProjectSubmitBtn.disabled = false;
+    ProjectSubmitBtn.textContent = "Создать проект";
   };
 
   xhr.send(formData);

@@ -2,55 +2,172 @@ import datetime
 import uuid
 import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
 from random import randint
 
 import requests
+from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django_rq import job
 
 from .forms import ProjectForm, FileForm
+from .models import ProjectModel, FileModel
 
 
+@dataclass
+class ProjectDataClass:
+    """
+    Датакласс содержит необходимые данные для отрисовки в template карточек проектов
+    """
+    title: str  # Название проекта
+    status_label: str  # Надпись для пользователя
+    status_key: str  # Цвет карточки. Варианты: "default", "in_progress", "review", "done", "paused", "draft"
+    status_badge_class: str  # Класс бейджа. Варианты: "default", "secondary", "outline", "destructive"
+    customer_name: str  # Имя заказчика
+    last_version: int  # Последняя версия
+    last_upload_date: str  # dd.mm.yyyy
+    last_upload_time: str  # hh:mm
+    slug: str  # uuid конкретного проекта
+
+
+@login_required
 def all_projects_view(request):
     context = {
-        "projects": [],
-        "status_filters": [{"value": "all", "label": "Все", "active": True}, ...],
-        "date_filters": [{"value": "recent", "label": "Сначала новые", "active": False}, ...],
-        "customer_filters": [{"value": "acme", "label": "ACME", "active": False}, ...],
+        "projects": list(),
+        "status_filters": {
+            "all": {"value": "all", "label": "Все", "active": True},
+            "new": {"value": "new", "label": "Новые", "active": False},
+            "in_progress": {"value": "in_progress", "label": "В работе", "active": False},
+            "in_revision": {"value": "in_revision", "label": "На доработке", "active": False},
+            "canceled": {"value": "canceled", "label": "Отменены", "active": False},
+            "finished": {"value": "finished", "label": "Завершены", "active": False},
+        },
+        "customer_filters": {
+            "all": {"value": "all", "label": "Все", "active": True},
+        },
         "current_status": request.GET.get("status", ""),
-        "current_date": request.GET.get("date", ""),
         "current_customer": request.GET.get("customer", ""),
         "has_filters": bool(request.GET),
         "reset_filters_url": reverse("all_projects"),
         "create_project_url": reverse("project_create"),
     }
+
+    # Помечаем, активны ли фильтры "Всё"
+    context["status_filters"]["all"]["active"] = True if context["current_status"] in ("", "all") else False
+    context["customer_filters"]["all"]["active"] = True if context["current_customer"] in ("", "all") else False
+
+    # Получаем списки проектов и заказчиков пользователя
+    user_projects = ProjectModel.objects.filter(owner=request.user).all()
+    customers = user_projects.values_list("customer", flat=True).distinct()
+
+    # Наполняем фильтр по заказчикам актуальными данными
+    for customer in customers:
+        customer_key = customer.lstrip("\\")
+        context["customer_filters"][customer_key] = {
+            "value": customer_key,
+            "label": customer,
+            "active": False,
+        }
+
+    # Если стоит фильтр на статус, фильтруем проекты
+    if context["current_status"] not in ("", "all"):
+        context["status_filters"][context["current_status"]]["active"] = True
+        user_projects = user_projects.filter(status=context["current_status"]).all()
+
+    # Если стоит фильтр на заказчика, фильтруем проекты
+    if context["current_customer"] not in ("", "all"):
+        context["customer_filters"][context["current_customer"]]["active"] = True
+        user_projects = user_projects.filter(customer=context["current_customer"]).all()
+
+    # Собираем только релевантные проекты в датаклассы
+    for project in user_projects:
+        last_file = FileModel.objects.filter(project=project).last()
+        project_dc = ProjectDataClass(
+            title=project.name,
+            status_label=project.get_status_display(),
+            status_key=project.status,
+            status_badge_class=project.get_status_badge_class(project.status),
+            customer_name=project.customer,
+            last_version=last_file.version if last_file else "NaN",
+            last_upload_date=last_file.uploaded_at.strftime("%d.%m.%Y") if last_file else "NaN",
+            last_upload_time=last_file.uploaded_at.strftime("%H:%m") if last_file else "NaN",
+            slug=project.slug,
+        )
+        context["projects"].append(project_dc)
+
     return render(request, "projects/all_projects.html", context)
 
 
+def project_view(request, project_slug):
+    return render(request, "projects/project.html", {"project_slug": project_slug})
+
+
+@login_required
 def project_create_view(request):
     project_form = ProjectForm(data=request.POST or None)
 
+    project_uuid = request.GET.get("uuid")
+    if not project_uuid:
+        project_uuid = uuid.uuid4()
+        base_url = reverse("project_create")
+        return redirect(f"{base_url}?uuid={project_uuid}")
+
     if request.method == "POST":
         if project_form.is_valid():
-            name = request.POST.get("name")
-            description = request.POST.get("description")
-            customer = request.POST.get("customer")
+            project = ProjectModel(
+                uuid=project_uuid,
+                name=project_form.cleaned_data["name"],
+                description=project_form.cleaned_data["description"],
+                customer=project_form.cleaned_data["customer"],
+                owner=request.user,
+            )
+            project.save()
+
+            unpinned_files = FileModel.objects.filter(project=None, upload_id=project_uuid).all()
+            for up in unpinned_files:
+                up.project = project
+                up.save()
+
+            return redirect("all_projects")
 
     return render(request, "projects/project_create.html", {"project_form": project_form})
 
 
+@login_required()
 def upload_file_view(request):
     upload_form = FileForm(data=request.POST or None)
+    project_uuid = request.GET.get("uuid")
 
     if request.method == 'POST':
-        if upload_form.is_valid():
-            file = request.FILES.get('file')
-            upload_id = request.POST.get("upload_id")
+        raw_file = request.FILES.get('file')
+        upload_id = request.POST.get("upload_id")
 
-            return upload_file(file, upload_id)
+        upload_result = upload_file(raw_file, upload_id)
+
+        if upload_result["status"] == "ok":
+            file = FileModel(
+                url=upload_result["url"],
+                filename=upload_result["filename"],
+            )
+
+            file.version = file.get_version()
+            filename_without_extension, extension = file.filename.rsplit(sep=".", maxsplit=1)
+            file.readable_filename = f"{filename_without_extension} v{file.version}.{extension}"
+            file.extension = extension
+            file.version_comment = f"Версия {file.version}"
+
+            project = ProjectModel.objects.filter(uuid=project_uuid).first()
+            if not project:
+                file.upload_id = project_uuid
+            else:
+                file.project = project
+
+            file.save()
+
+            return JsonResponse({"status": "ok"}, status=200)
 
     return render(request, "projects/upload_file.html", {"upload_form": upload_form})
 
@@ -84,7 +201,11 @@ def upload_file(file, upload_id):
         cache_upload_id,
     )
 
-    return JsonResponse({'status': 'ok', 'filename': file.name})
+    return {
+        "status": "ok",
+        "url": f"https://storage.yandexcloud.net/{bucket_name}/{object_path}",
+        "filename": file.name,
+    }
 
 
 def get_upload_value_view(request, upload_id):

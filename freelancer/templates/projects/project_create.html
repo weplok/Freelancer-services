@@ -19,7 +19,7 @@
 
       <div class="card__content">
         <form class="form card demo-card" id="upload-form" method="post" enctype="multipart/form-data"
-              action="{% url 'upload_file' %}">
+              action="{% url 'upload_file' %}?uuid={{ request.GET.uuid }}">
           {% csrf_token %}
           <div
                   id="drop-zone"
@@ -79,7 +79,7 @@
     </div>
 
     <!-- ПРАВАЯ ЧАСТЬ -->
-    <form method="post" id="project-form" class="project-create" action="{% url 'project_create' %}">
+    <form method="post" id="project-form" class="project-create" action="{% url 'project_create' %}?uuid={{ request.GET.uuid }}">
       {% csrf_token %}
       <div class="card project-create__side">
 
@@ -121,7 +121,7 @@
   </div>
 
   <div class="project-create__actions">
-    <button class="btn btn--default btn--lg" type="submit" name="project_submit" form="project-form">
+    <button class="btn btn--default btn--lg" type="submit" name="project_submit" id="project-submit" form="project-form">
       Создать проект
     </button>
   </div>

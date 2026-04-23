@@ -2457,6 +2457,10 @@ svg {
   align-items: stretch;
 }
 
+.project-card:hover {
+  background: hsl(var(--muted));
+}
+
 .project-card__stripe {
   width: .45rem;
   flex: 0 0 .45rem;
@@ -2465,10 +2469,10 @@ svg {
 
 .project-card__stripe--default { background: hsl(var(--primary)); }
 .project-card__stripe--in_progress { background: hsl(var(--chart-5)); }
-.project-card__stripe--review { background: hsl(var(--chart-3)); }
-.project-card__stripe--done { background: hsl(var(--chart-2)); }
-.project-card__stripe--paused { background: hsl(var(--destructive)); }
-.project-card__stripe--draft { background: hsl(var(--muted-foreground)); }
+.project-card__stripe--in_revision { background: hsl(var(--chart-3)); }
+.project-card__stripe--finished { background: hsl(var(--chart-2)); }
+.project-card__stripe--canceled { background: hsl(var(--destructive)); }
+.project-card__stripe--new { background: hsl(var(--muted-foreground)); }
 
 .project-card__content {
   flex: 1 1 auto;

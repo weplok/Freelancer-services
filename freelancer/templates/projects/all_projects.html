@@ -7,7 +7,7 @@
     <div class="projects-page__title-block">
       <h1 class="projects-page__title">Проекты</h1>
       <p class="projects-page__subtitle">
-        Сетка карточек проектов с быстрыми фильтрами и отдельной карточкой создания.
+        Над чем поработаем сегодня? :)
       </p>
     </div>
 
@@ -21,9 +21,6 @@
     <div class="projects-filters__header">
       <div>
         <h2 class="projects-filters__title">Фильтры</h2>
-        <p class="projects-filters__subtitle">
-          Статусы, дата загрузки и заказчик могут использоваться одновременно.
-        </p>
       </div>
 
       {% if has_filters %}
@@ -33,11 +30,10 @@
 
     <div class="projects-filters__grid">
       <form method="get" class="projects-filter-group">
-        {% if current_date %}<input type="hidden" name="date" value="{{ current_date }}">{% endif %}
         {% if current_customer %}<input type="hidden" name="customer" value="{{ current_customer }}">{% endif %}
         <div class="projects-filter-group__title">Статус</div>
         <div class="projects-filter-group__controls">
-          {% for item in status_filters %}
+          {% for key, item in status_filters.items %}
             <button
               type="submit"
               name="status"
@@ -53,29 +49,9 @@
 
       <form method="get" class="projects-filter-group">
         {% if current_status %}<input type="hidden" name="status" value="{{ current_status }}">{% endif %}
-        {% if current_customer %}<input type="hidden" name="customer" value="{{ current_customer }}">{% endif %}
-        <div class="projects-filter-group__title">Дата загрузки</div>
-        <div class="projects-filter-group__controls">
-          {% for item in date_filters %}
-            <button
-              type="submit"
-              name="date"
-              value="{{ item.value }}"
-              class="btn btn--outline btn--sm projects-filter-chip{% if item.active %} is-active{% endif %}"
-              {% if item.active %}aria-pressed="true"{% else %}aria-pressed="false"{% endif %}
-            >
-              {{ item.label }}
-            </button>
-          {% endfor %}
-        </div>
-      </form>
-
-      <form method="get" class="projects-filter-group">
-        {% if current_status %}<input type="hidden" name="status" value="{{ current_status }}">{% endif %}
-        {% if current_date %}<input type="hidden" name="date" value="{{ current_date }}">{% endif %}
         <div class="projects-filter-group__title">Заказчик</div>
         <div class="projects-filter-group__controls">
-          {% for item in customer_filters %}
+          {% for key, item in customer_filters.items %}
             <button
               type="submit"
               name="customer"
