@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="container-main projects-page">
+  <div class="projects-page project-detail project-edit">
+    <div class="projects-page__header project-detail__header">
+      <div class="projects-page__title-block project-detail__title-block">
+        <div class="project-detail__breadcrumb">
+          <a class="project-detail__breadcrumb-link" href="{% url 'project_detail' project_slug=project.slug %}">{{ project.name }}</a>
+          <span class="project-detail__breadcrumb-sep">/</span>
+          <span class="project-detail__breadcrumb-current">Редактирование</span>
+        </div>
+
+        <h1 class="projects-page__title project-detail__title">Параметры проекта</h1>
+        <p class="projects-page__subtitle project-detail__subtitle">
+          Измените сведения о проекте «{{ project.name }}»
+        </p>
+      </div>
+    </div>
+
+    <form class="card project-detail__form-card" method="post" id="edit-project">
+      {% csrf_token %}
+
+      <div class="project-card__stripe project-card__stripe--{{ project.status_key|default:'default' }}"></div>
+
+      <div class="project-detail__form-grid">
+        <div class="project-form__field project-detail__field project-detail__field--wide">
+          <label class="project-form__label" for="id_name">Название</label>
+          <input class="input" type="text" id="id_name" name="name" value="{{ project.name }}" required>
+        </div>
+
+        <div class="project-form__field project-detail__field project-detail__field--wide">
+          <label class="project-form__label" for="id_customer">Заказчик</label>
+          <input class="input" type="text" id="id_customer" name="customer" value="{{ project.customer_name }}" required>
+        </div>
+
+        <div class="project-form__field project-detail__field">
+          <label class="project-form__label" for="id_status">Статус</label>
+          <select class="input" id="id_status" name="status" required>
+            <option value="new" {% if project.status_key == 'new' %}selected{% endif %}>Новый</option>
+            <option value="in_progress" {% if project.status_key == 'in_progress' %}selected{% endif %}>В работе</option>
+            <option value="in_revision" {% if project.status_key == 'in_revision' %}selected{% endif %}>На доработке</option>
+            <option value="finished" {% if project.status_key == 'finished' %}selected{% endif %}>Завершён</option>
+            <option value="canceled" {% if project.status_key == 'canceled' %}selected{% endif %}>Отменён</option>
+          </select>
+        </div>
+
+        <div class="project-form__field project-detail__field project-detail__field--full">
+          <label class="project-form__label" for="id_description">Описание / ТЗ</label>
+          <textarea class="textarea" id="id_description" name="description" rows="6" required>{{ project.description }}</textarea>
+        </div>
+      </div>
+    </form>
+
+    <div class="project-detail__form-actions">
+
+      <a href="{% url 'project_detail' project_slug=project.slug %}">
+        <button class="btn btn--outline">
+          Отмена
+        </button>
+      </a>
+
+      <a href="{% url 'project_edit' project_slug=project.slug %}">
+        <button class="btn btn--primary" type="submit" form="edit-project">
+          Сохранить
+        </button>
+      </a>
+
+    </div>
+  </div>
+</main>
+{% endblock %}

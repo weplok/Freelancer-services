@@ -34,7 +34,8 @@ class ProjectModel(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        self.slug = slug_generate(f"{self.owner.username} {self.name} {random.randint(1000, 9999)}")
+        if not self.slug:
+            self.slug = slug_generate(f"{self.owner.username} {self.name} {random.randint(1000, 9999)}")
         super().save(*args, **kwargs)
 
     @staticmethod
@@ -55,13 +56,17 @@ class ProjectModel(models.Model):
 
 
 class FileModel(models.Model):
-    url = models.URLField(max_length=254)  # Прямая ссылка на скачивание
+    url = models.URLField(max_length=2000)  # Прямая ссылка на скачивание
+    dirty_file_url = models.URLField(max_length=2000, null=True)  # Ссылка на грязный файл для предпросмотра
     filename = models.CharField(max_length=254)  # Название файла на сервере
+    slug = models.SlugField(unique=True, blank=True)
     readable_filename = models.CharField(max_length=254)  # Название файла при скачивании
-    upload_id = models.UUIDField(editable=False)  # Временный ID во время загрузки в объектное хранилище
+    bucket = models.CharField(max_length=63)  # Бакет, в котором хранится файл
+    object_path = models.CharField(max_length=2000)  # Путь до объекта с файлом на бакете
+    upload_id = models.UUIDField(editable=False, null=True)  # Временный ID во время загрузки в объектное хранилище
     extension = models.CharField(max_length=8)  # Расширение файла
     version = models.PositiveIntegerField(default=0)  # Номер версии (от 0)
-    version_comment = models.CharField(max_length=254, blank=True)  # Комментарий к версии
+    version_comment = models.TextField()  # Комментарий к версии
     uploaded_at = models.DateTimeField(auto_now_add=True)  # ДатаВремя загрузки
     project = models.ForeignKey(
         ProjectModel,
@@ -95,6 +100,9 @@ class FileModel(models.Model):
 
         if not self.readable_filename.endswith(self.extension):
             self.readable_filename = f"{self.readable_filename}.{self.extension}"
+
+        if not self.slug:
+            self.slug = slug_generate(f"{self.project.owner.username} {self.readable_filename} {self.version}")
 
         if not self.version_comment:
             self.version_comment = f"Версия {self.version}"

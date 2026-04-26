@@ -1,6 +1,10 @@
 FROM python:3.11-alpine3.23
 
 COPY requirements.txt /temp/requirements.txt
+
+RUN mkdir "freelancer/media"
+RUN mkdir "freelancer/media/tmp"
+
 COPY freelancer /freelancer
 WORKDIR /freelancer
 EXPOSE 8000

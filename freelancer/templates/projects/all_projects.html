@@ -71,7 +71,7 @@
     {% include 'projects/includes/project_create_card.html' %}
 
     {% for project in projects %}
-      {% include 'projects/includes/project_card.html' with project=project %}
+      {% include 'projects/includes/project_card.html' with project=project need_url=True %}
     {% empty %}
       <div class="projects-empty card">
         <div class="projects-empty__title">Проектов пока нет</div>

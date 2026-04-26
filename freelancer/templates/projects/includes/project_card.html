@@ -1,35 +1,44 @@
-  <a class="project-card card" href="{% url 'project' project_slug=project.slug %}">
-    <div class="project-card__stripe project-card__stripe--{{ project.status_key|default:'default' }}"></div>
+{% if need_url %}
+  <a class="project-card card" href="{% url 'project_detail' project_slug=project.slug %}">
+{% else %}
+  <a class="project-card card">
+{% endif %}
+  <div class="project-card__stripe project-card__stripe--{{ project.status_key|default:'default' }}"></div>
 
-    <div class="project-card__content">
-      <div class="project-card__head">
-        <div class="project-card__heading">
-          <h2 class="project-card__title">
-              {{ project.title }}
-          </h2>
-          <div class="project-card__customer">
-            Заказчик: <span class="project-card__customer-name">{{ project.customer_name }}</span>
-          </div>
+  <div class="project-card__content">
+    <div class="project-card__head">
+      <div class="project-card__heading">
+        <h2 class="project-card__title">
+          {{ project.name }}
+        </h2>
+        <div class="project-card__customer">
+          Заказчик: <span class="project-card__customer-name">{{ project.customer_name }}</span>
         </div>
+      </div>
 
-        <span class="badge badge--{{ project.status_badge_class|default:'outline' }} project-card__status">
-        {{ project.status_label }}
+      <span class="badge badge--{{ project.status_badge_class|default:'outline' }} project-card__status">
+      {{ project.status_label }}
+    </span>
+    </div>
+
+    <div class="project-card__meta">
+      <div class="project-card__meta-item">
+        <span class="project-card__meta-label">Последняя версия</span>
+        <span class="project-card__meta-value">v.{{ project.last_version }}</span>
+      </div>
+
+      <div class="project-card__meta-item project-card__meta-item--wide">
+        <span class="project-card__meta-label">Обновление</span>
+        <span class="project-card__meta-value project-card__meta-value--stacked">
+        <span>{{ project.last_upload_date|default:'—' }}</span>
+        <span class="project-card__meta-note">{{ project.last_upload_time|default:'' }}</span>
       </span>
       </div>
-
-      <div class="project-card__meta">
-        <div class="project-card__meta-item">
-          <span class="project-card__meta-label">Последняя версия</span>
-          <span class="project-card__meta-value">v.{{ project.last_version }}</span>
-        </div>
-
-        <div class="project-card__meta-item project-card__meta-item--wide">
-          <span class="project-card__meta-label">Обновление</span>
-          <span class="project-card__meta-value project-card__meta-value--stacked">
-          <span>{{ project.last_upload_date|default:'—' }}</span>
-          <span class="project-card__meta-note">{{ project.last_upload_time|default:'' }}</span>
-        </span>
-        </div>
-      </div>
     </div>
+  </div>
+
+{% if need_url %}
   </a>
+{% else %}
+  </a>
+{% endif %}

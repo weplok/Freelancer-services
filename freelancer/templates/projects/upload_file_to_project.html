@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<main class="container-main" style="padding: 2rem 0;">
+
+  <div class="projects-page__header project-detail__header">
+    <div class="project-detail__breadcrumb">
+      <a class="project-detail__breadcrumb-link" href="{% url 'project_detail' project_slug=project_slug %}">
+        {{ project_name }}
+      </a>
+      <span class="project-detail__breadcrumb-sep">/</span>
+      <span class="project-detail__breadcrumb-current">Загрузка файла</span>
+    </div>
+    <h1></h1>
+  </div>
+
+  <div class="project-create__grid">
+
+    <!-- ЛЕВАЯ ЧАСТЬ -->
+    <div class="card project-create__side">
+
+      <div class="card__header">
+        <div class="card__title">Первая версия проекта</div>
+        <div class="card__description">
+          Предзагрузите первую версию файла для определения настроек проекта
+        </div>
+      </div>
+
+      <div class="card__content">
+        <form class="form card demo-card" id="upload-form" method="post" enctype="multipart/form-data"
+              action="{% url 'upload_file' %}?uuid={{ project_uuid }}">
+          {% csrf_token %}
+          <div
+                  id="drop-zone"
+                  class="drop-zone"
+                  tabindex="0"
+                  role="button"
+                  aria-label="Перетащи файл сюда или нажми, чтобы выбрать"
+          >
+            <div class="drop-zone__icon" id="drop-zone-icon" aria-hidden="true">
+              <!-- иконка файла по умолчанию -->
+              <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"></path>
+                <path d="M14 2v5h5"></path>
+              </svg>
+            </div>
+
+            <div class="drop-zone__content">
+              <p class="drop-zone__title" id="drop-zone-title">Перетащите файл сюда или кликните</p>
+              <p class="drop-zone__hint" id="drop-zone-hint">Вы можете загрузить медиа-файл до 2 ГБ</p>
+            </div>
+
+            <input type="file" id="file-input" name="file" hidden>
+          </div>
+
+          <div class="file-preview" id="file-preview" hidden>
+            <div class="file-preview__row">
+              <strong id="file-name">—</strong>
+              <span class="file-preview__ext" id="file-ext">—</span>
+            </div>
+
+            <div class="file-preview__meta">
+              <span>Размер: <span id="file-size">—</span></span>
+            </div>
+          </div>
+
+          <div class="upload-block" id="upload-block" hidden>
+            <div class="demo-row" style="justify-content: space-between;">
+              <strong>Загрузка файла</strong>
+              <span class="demo-muted" id="upload-percent">0%</span>
+            </div>
+
+            <div class="progress">
+              <div class="progress__indicator" id="upload-indicator"></div>
+            </div>
+          </div>
+
+          <div class="form__message" id="form-message" hidden>Ошибка валидации появится здесь.</div>
+
+          <div class="demo-row">
+            <button class="btn btn--default btn--sm" type="submit" name="upload_submit">Предзагрузить</button>
+            <button class="btn btn--outline btn--sm" type="button" id="reset-btn">Отменить выбор</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- ПРАВАЯ ЧАСТЬ -->
+    <form method="post" id="upload-info-form" class="project-create"
+          action="{% url 'upload_file_to_project' project_slug=project_slug %}">
+      {% csrf_token %}
+      <div class="card project-create__side">
+
+        <div class="card__header">
+          <div class="card__title">Информация о файле</div>
+        </div>
+
+        <div class="card__content project-form">
+
+          <div class="project-form__field">
+            <label class="label">Читаемое название</label>
+            <input class="input" name="readable_filename" placeholder="Читаемое название">
+          </div>
+
+          <div class="project-form__field">
+            <label class="label">Описание</label>
+            <textarea class="textarea" name="version_comment"
+                      placeholder="Комментарий к версии"></textarea>
+          </div>
+
+          {% if project_form.errors %}
+          <div class="alert alert--destructive">
+            {{ project_form.errors }}
+          </div>
+          {% endif %}
+
+          <div class="project-create__actions">
+            <button class="btn btn--default btn--lg" type="submit" name="project_submit" id="project-submit" form="upload-info-form" disabled>
+              Сохранить файл
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</main>
+
+<script src="{% static 'projects/js/dragNdrop.js' %}"></script>
+
+{% endblock %}

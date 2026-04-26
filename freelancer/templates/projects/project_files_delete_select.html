@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="container-main projects-page">
+  <div class="projects-page project-detail project-delete">
+    <div class="projects-page__header project-detail__header">
+
+      <div class="projects-page__title-block project-detail__title-block">
+        <div class="project-detail__breadcrumb">
+          <a class="project-detail__breadcrumb-link" href="{% url 'project_detail' project_slug=project.slug %}">
+            {{ project.name }}
+          </a>
+          <span class="project-detail__breadcrumb-sep">/</span>
+          <span class="project-detail__breadcrumb-current">Удаление файлов</span>
+        </div>
+
+        <h1 class="projects-page__title project-detail__title">Выбор файлов для удаления</h1>
+        <p class="projects-page__subtitle project-detail__subtitle">
+          Отметь документы, которые нужно удалить, затем подтверди действие.
+        </p>
+      </div>
+
+      <div class="projects-page__title-block project-detail__title-block">
+        <h2 class="showcase__section-title" style="text-align: right;">Или</h2>
+        <button type="button" class="btn btn--destructive btn--sm" id="openDeleteModal">
+          Удалить проект
+        </button>
+      </div>
+
+    </div>
+
+    <form method="post" action="{% url 'project_files_delete_confirm' project_slug=project.slug %}">
+      {% csrf_token %}
+
+      {% if files %}
+      <div class="project-files-grid project-files-grid--selectable">
+        {% for file in files %}
+        <label class="card project-file-card project-file-card--selectable">
+          <input class="project-file-card__check-input" type="checkbox" name="file_ids" value="{{ file.id }}">
+
+          <div class="project-file-card__body">
+            <div class="project-file-card__top">
+              <div class="project-file-card__icon" aria-hidden="true">
+                <span style="text-transform: uppercase;">{{ file.extension }}</span>
+              </div>
+
+              <div class="project-file-card__head">
+                <div class="project-file-card__name-row">
+                  <h3 class="project-file-card__name">{{ file.filename }}</h3>
+                  <div class="project-file-card__select-hint">
+                    ⭕
+                  </div>
+                </div>
+
+                <div class="project-file-card__version">
+                  Версия
+                  <span class="project-file-card__version-value">v{{ file.version }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="project-file-card__comment">
+              {{ file.version_comment|default:"Без комментария" }}
+            </div>
+
+            <div class="project-file-card__meta">
+              <div class="project-file-card__meta-item">
+                <span class="project-file-card__meta-label">Загружен</span>
+                <span class="project-file-card__meta-value">{{ file.uploaded_at|date:"d.m.Y" }}</span>
+              </div>
+
+              <div class="project-file-card__meta-item">
+                <span class="project-file-card__meta-label">Время</span>
+                <span class="project-file-card__meta-value">{{ file.uploaded_at|date:"H:i" }}</span>
+              </div>
+            </div>
+          </div>
+        </label>
+        {% endfor %}
+      </div>
+
+      <div class="project-detail__form-actions">
+        <a class="btn btn--outline" href="{% url 'project_detail' project_slug=project.slug %}">Отмена</a>
+        <button class="btn btn--destructive" type="submit">Подтвердить</button>
+      </div>
+      {% else %}
+      <div class="card projects-empty project-detail__empty">
+        <div class="projects-empty__title">Удалять нечего</div>
+        <p class="projects-empty__description">У этого проекта пока нет файлов.</p>
+        <a class="btn btn--outline" href="{% url 'project_detail' project_slug=project.slug %}">Вернуться
+          назад</a>
+      </div>
+      {% endif %}
+    </form>
+
+    <div class="modal" id="deleteProjectModal" aria-hidden="true">
+      <div class="modal__overlay" id="modalOverlay"></div>
+
+      <div class="modal__dialog card" role="dialog" aria-modal="true">
+        <button class="modal__close" id="closeModal" aria-label="Закрыть">×</button>
+
+        <div class="modal__content">
+          <h3 class="modal__title">
+            Вы точно хотите удалить проект?
+          </h3>
+
+          {% include 'projects/includes/project_card.html' with project=project need_url=False %}
+
+          <p class="modal__description">
+            Проект <b>«{{ project.name }}»</b> будет безвозвратно удален вместе со всеми файлами.
+            Мы не храним файлы, загруженные в проект, после его удаления. Поэтому это действие
+            будет <b>необратимо</b>.
+          </p>
+        </div>
+
+        <div class="modal__actions" style="display: flex;">
+          <button class="btn btn--outline" id="cancelDelete">
+            Отмена
+          </button>
+
+          <form method="post" action="{% url 'project_delete' project_slug=project.slug %}">
+            {% csrf_token %}
+            <button class="btn btn--destructive" id="confirmDelete" disabled>
+              Удалить (5)
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+{% endblock %}

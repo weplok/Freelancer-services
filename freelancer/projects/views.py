@@ -13,7 +13,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django_rq import job
 
-from .forms import ProjectForm, FileForm
+from .forms import ProjectForm, ProjectEditForm, FileForm, FileInfoForm
 from .models import ProjectModel, FileModel
 
 
@@ -22,15 +22,23 @@ class ProjectDataClass:
     """
     Датакласс содержит необходимые данные для отрисовки в template карточек проектов
     """
-    title: str  # Название проекта
-    status_label: str  # Надпись для пользователя
-    status_key: str  # Цвет карточки. Варианты: "default", "in_progress", "review", "done", "paused", "draft"
-    status_badge_class: str  # Класс бейджа. Варианты: "default", "secondary", "outline", "destructive"
-    customer_name: str  # Имя заказчика
-    last_version: int  # Последняя версия
-    last_upload_date: str  # dd.mm.yyyy
-    last_upload_time: str  # hh:mm
-    slug: str  # uuid конкретного проекта
+    name: str = "name"  # Название проекта
+    description: str = "default"  # Описание проекта
+
+    status_label: str = "status"  # Надпись для пользователя
+    status_key: str = "default"  # Цвет карточки.
+    # Варианты: "default", "in_progress", "in_revision", "finished", "canceled", "new"
+    status_badge_class: str = "default"  # Класс бейджа. Варианты: "default", "secondary", "outline", "destructive"
+
+    customer_name: str = "customer"  # Имя заказчика
+    slug: str = "slug"  # уникальный slug конкретного проекта
+
+    last_version: int = ""  # Последняя версия
+    last_upload_date: str = "—"  # dd.mm.yyyy последней загрузки
+    last_upload_time: str = "—"  # hh:mm последней загрузки
+
+    created_date: str = "—"  # dd.mm.yyyy создания проекта
+    created_time: str = "—"  # hh:mm создания проекта
 
 
 @login_required
@@ -86,23 +94,137 @@ def all_projects_view(request):
     for project in user_projects:
         last_file = FileModel.objects.filter(project=project).last()
         project_dc = ProjectDataClass(
-            title=project.name,
+            name=project.name,
             status_label=project.get_status_display(),
             status_key=project.status,
             status_badge_class=project.get_status_badge_class(project.status),
             customer_name=project.customer,
-            last_version=last_file.version if last_file else "NaN",
-            last_upload_date=last_file.uploaded_at.strftime("%d.%m.%Y") if last_file else "NaN",
-            last_upload_time=last_file.uploaded_at.strftime("%H:%m") if last_file else "NaN",
             slug=project.slug,
         )
+
+        if last_file:
+            project_dc.last_version = last_file.version
+            project_dc.last_upload_date = last_file.uploaded_at.strftime("%d.%m.%Y")
+            project_dc.last_upload_time = last_file.uploaded_at.strftime("%H:%m")
+
         context["projects"].append(project_dc)
 
     return render(request, "projects/all_projects.html", context)
 
 
+@login_required()
 def project_view(request, project_slug):
-    return render(request, "projects/project.html", {"project_slug": project_slug})
+    project = ProjectModel.objects.filter(slug=project_slug).first()
+    if project.owner != request.user:
+        return JsonResponse({"status": "401"}, status=401)
+
+    project_dc = ProjectDataClass(
+        name=project.name,
+        description=project.description,
+        customer_name=project.customer,
+        created_date=project.created_at.strftime("%d.%m.%Y"),
+        created_time=project.created_at.strftime("%H:%m"),
+        status_label=project.get_status_display(),
+        status_key=project.status,
+        status_badge_class=project.get_status_badge_class(project.status),
+        slug=project.slug,
+    )
+
+    context = {
+        "project": project_dc,
+        "files": [],
+    }
+
+    files = FileModel.objects.filter(project=project).all()
+    context["files"] = files
+
+    return render(request, "projects/project_detail.html", context)
+
+
+@login_required()
+def project_edit_view(request, project_slug):
+    project = ProjectModel.objects.filter(slug=project_slug).first()
+    if project.owner != request.user:
+        return JsonResponse({"status": "401"}, status=401)
+
+    project_dc = ProjectDataClass(
+        name=project.name,
+        description=project.description,
+        customer_name=project.customer,
+        status_label=project.get_status_display(),
+        status_key=project.status,
+        status_badge_class=project.get_status_badge_class(project.status),
+        slug=project.slug,
+    )
+    context = {
+        "project": project_dc,
+    }
+    project_form = ProjectEditForm(data=request.POST or None, instance=project)
+    if request.method == "POST":
+        if project_form.is_valid():
+            project_form.save()
+
+            return redirect("project_detail", project_slug=project_slug)
+
+    return render(request, "projects/project_edit.html", context)
+
+
+@login_required()
+def project_delete_select_files_view(request, project_slug):
+    project = ProjectModel.objects.filter(slug=project_slug).first()
+    if project.owner != request.user:
+        return JsonResponse({"status": "401"}, status=401)
+
+    project_dc = ProjectDataClass(
+        name=project.name,
+        customer_name=project.customer,
+        status_label=project.get_status_display(),
+        status_key=project.status,
+        status_badge_class=project.get_status_badge_class(project.status),
+        slug=project.slug,
+    )
+
+    last_file = FileModel.objects.filter(project=project).last()
+    if last_file:
+        project_dc.last_version = last_file.version
+        project_dc.last_upload_date = last_file.uploaded_at.strftime("%d.%m.%Y")
+        project_dc.last_upload_time = last_file.uploaded_at.strftime("%H:%m")
+
+    context = {
+        "project": project_dc,
+        "files": [],
+    }
+
+    files = FileModel.objects.filter(project=project).all()
+    context["files"] = files
+    return render(request, "projects/project_files_delete_select.html", context)
+
+
+@login_required()
+def confirm_delete_select_files_view(request, project_slug):
+    project = ProjectModel.objects.filter(slug=project_slug).first()
+    if project.owner != request.user:
+        return JsonResponse({"status": "401"}, status=401)
+
+    if request.method == "POST":
+        ids_to_delete = request.POST.getlist('file_ids')
+        if ids_to_delete:
+            delete_files(file_ids_list=ids_to_delete)
+            return redirect("project_detail", project_slug=project_slug)
+    return redirect("project_files_delete_select", project_slug=project_slug)
+
+
+@login_required()
+def project_delete_view(request, project_slug):
+    project = ProjectModel.objects.filter(slug=project_slug).first()
+    if project.owner != request.user:
+        return JsonResponse({"status": "401"}, status=401)
+
+    if request.method == "POST":
+        delete_files(project_id=project.id)
+        project.delete()
+        return redirect("all_projects")
+    return redirect("project_files_delete_select", project_slug=project_slug)
 
 
 @login_required
@@ -150,7 +272,10 @@ def upload_file_view(request):
         if upload_result["status"] == "ok":
             file = FileModel(
                 url=upload_result["url"],
+                dirty_file_url=upload_result["url"],  # TODO: делать ссылку на сжатый файл
                 filename=upload_result["filename"],
+                bucket=upload_result["bucket"],
+                object_path=upload_result["object_path"],
             )
 
             file.version = file.get_version()
@@ -160,9 +285,8 @@ def upload_file_view(request):
             file.version_comment = f"Версия {file.version}"
 
             project = ProjectModel.objects.filter(uuid=project_uuid).first()
-            if not project:
-                file.upload_id = project_uuid
-            else:
+            file.upload_id = project_uuid
+            if project:
                 file.project = project
 
             file.save()
@@ -170,6 +294,50 @@ def upload_file_view(request):
             return JsonResponse({"status": "ok"}, status=200)
 
     return render(request, "projects/upload_file.html", {"upload_form": upload_form})
+
+
+@login_required()
+def upload_to_project_view(request, project_slug):
+    project = ProjectModel.objects.filter(slug=project_slug).first()
+    if project.owner != request.user:
+        return JsonResponse({"status": "401"}, status=401)
+
+    context = {
+        "project_slug": project_slug,
+        "project_uuid": project.uuid,
+        "project_name": project.name,
+    }
+
+    last_file = FileModel.objects.filter(project=project).first()
+
+    if last_file:
+        file_info_form = FileInfoForm(data=request.POST or None, instance=last_file)
+        if request.method == "POST":
+            if file_info_form.is_valid():
+                file_info_form.save()
+
+                return redirect("file_detail", project_slug=project_slug, file_slug=last_file.slug)
+
+    return render(request, "projects/upload_file_to_project.html", context)
+
+
+def file_detail_view(request, project_slug, file_slug):
+    project = ProjectModel.objects.filter(slug=project_slug).first()
+
+    is_owner = True if project.owner == request.user else False
+
+    is_download_allowed = True if project.status == "finished" else False
+
+    file = FileModel.objects.filter(slug=file_slug).first()
+
+    context = {
+        "project": project,
+        "file": file,
+        "is_owner": is_owner,
+        "is_download_allowed": is_download_allowed
+    }
+
+    return render(request, "projects/file_detail.html", context)
 
 
 def upload_file(file, upload_id):
@@ -205,6 +373,8 @@ def upload_file(file, upload_id):
         "status": "ok",
         "url": f"https://storage.yandexcloud.net/{bucket_name}/{object_path}",
         "filename": file.name,
+        "bucket": bucket_name,
+        "object_path": object_path,
     }
 
 
@@ -275,7 +445,7 @@ def complete_upload(bucket, key, iam_token, upload_id, filename, e_tags, cache_u
         e_tag.text = str(item[1])
 
     tree = ET.ElementTree(root)
-    tmp_name = f"tmp/{randint(10000000, 99999999)}.xml"
+    tmp_name = f"media/tmp/{randint(10000000, 99999999)}.xml"
     tree.write(tmp_name, encoding="utf-8", xml_declaration=True)
 
     response = requests.post(url, headers=headers, files={"file": open(tmp_name, "rb")})
@@ -302,6 +472,28 @@ def object_upload(bucket, key, iam_token, filename, cache_upload_id):
     result = complete_upload(bucket, key, iam_token, upload_id, filename, e_tags, cache_upload_id)
 
     return result
+
+
+def delete_files(file_ids_list: list = None, project_id: str = None):
+    with open("iam_token.txt", "r", encoding="utf-8") as token_file:
+        iam_token = token_file.read()
+    headers = {"Authorization": f"Bearer {iam_token}"}
+
+    if file_ids_list:
+        files = FileModel.objects.filter(id__in=file_ids_list)
+
+    elif project_id:
+        files = FileModel.objects.filter(project=project_id).all()
+
+    else:
+        raise AttributeError("Не передан один из обязательных атрибутов: file_ids_list, project_id")
+
+    for file in files:
+        requests.delete(file.url, headers=headers)
+
+    files.delete()
+
+    return True
 
 
 @job

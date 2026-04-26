@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="container-main projects-page">
+  <div class="projects-page file-detail">
+    <div class="projects-page__header file-detail__header">
+      <div class="projects-page__title-block file-detail__title-block">
+        {% if is_owner %}
+          <div class="project-detail__breadcrumb">
+            <a class="project-detail__breadcrumb-link" href="{% url 'project_detail' project_slug=project.slug %}">
+              {{ project.name }}
+            </a>
+            <span class="project-detail__breadcrumb-sep">/</span>
+            <span class="project-detail__breadcrumb-current">Файл</span>
+          </div>
+        {% endif %}
+
+        <h1 class="projects-page__title file-detail__title">{{ file.readable_filename }}</h1>
+        <p class="projects-page__subtitle file-detail__subtitle">
+          Версия v{{ file.version }} · {{ file.uploaded_at|date:"d.m.Y H:i" }}
+        </p>
+      </div>
+
+      {% if is_download_allowed %}
+      <div class="file-detail__actions">
+        <a class="btn btn--primary file-detail__action" href="{{ file.url }}" download>
+          Скачать файл
+        </a>
+      </div>
+      {% endif %}
+    </div>
+
+    <section class="file-detail__layout">
+      <article class="card file-preview-card">
+        <div class="file-preview-card__stage">
+          <div class="file-preview-card__frame">
+            <img
+              class="file-preview-card__image"
+              src="{{ file.dirty_file_url }}"
+              alt="{{ file.readable_filename }}"
+            >
+          </div>
+        </div>
+
+        <div class="file-preview-card__top">
+          <div class="file-preview-card__hint">Предпросмотр файла защищён от непреднамеренного скачивания</div>
+        </div>
+      </article>
+
+      <aside class="card file-meta-card">
+        <div class="file-meta-card__head">
+          <div class="file-meta-card__icon" aria-hidden="true" style="text-transform: uppercase;">{{ file.extension }}</div>
+          <div class="file-meta-card__title-block">
+            <h2 class="file-meta-card__title">{{ file.readable_filename }}</h2>
+            <div class="file-meta-card__subtitle">
+              Принадлежит проекту: <span>{{ project.name }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-file-card__meta file-meta-card__grid">
+
+          <div class="project-file-card__meta-item">
+            <span class="project-file-card__meta-label">Версия</span>
+            <span class="project-file-card__meta-value">v{{ file.version }}</span>
+          </div>
+
+          <div class="project-file-card__meta-item file-meta-card__comment-item">
+            <span class="project-file-card__meta-label">Комментарий к версии</span>
+            <span class="file-meta-card__comment">
+              {{ file.version_comment|default:"Без комментария" }}
+            </span>
+          </div>
+
+          <div class="project-file-card__meta-item">
+            <span class="project-file-card__meta-label">Дата загрузки</span>
+            <span class="project-file-card__meta-value">{{ file.uploaded_at|date:"d.m.Y" }}</span>
+          </div>
+
+          <div class="project-file-card__meta-item">
+            <span class="project-file-card__meta-label">Время загрузки</span>
+            <span class="project-file-card__meta-value">{{ file.uploaded_at|date:"H:i" }}</span>
+          </div>
+        </div>
+
+      </aside>
+    </section>
+  </div>
+</main>
+{% endblock %}

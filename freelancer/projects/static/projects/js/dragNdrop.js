@@ -19,6 +19,8 @@ const resetBtn = document.getElementById('reset-btn');
 
 const ProjectSubmitBtn = document.getElementById('project-submit');
 
+const FileInfoSaveBtn = document.getElementById('file-info-submit');
+
 let selectedFile = null;
 let pollingInterval = null;
 
@@ -237,6 +239,7 @@ form.addEventListener('submit', (e) => {
           showMessage('Файл загружен на сервер! 👍', false);
           ProjectSubmitBtn.disabled = false;
           ProjectSubmitBtn.textContent = "Создать проект";
+
         }
 
       } catch (err) {

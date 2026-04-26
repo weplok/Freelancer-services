@@ -82,26 +82,76 @@ collapsibleTrigger?.addEventListener('click', (e) => {
 });
 
 
+// === DROPDOWN MENU ===
 const avatarTrigger = document.getElementById('avatarTrigger');
 const dropdownMenu = document.getElementById('dropdownMenu');
 const avatarDropdown = document.getElementById('avatarDropdown');
 
-// toggle по клику
 avatarTrigger.addEventListener('click', (e) => {
 e.stopPropagation();
 dropdownMenu.classList.toggle('active');
 });
 
-// клик вне — закрыть
 document.addEventListener('click', (e) => {
 if (!avatarDropdown.contains(e.target)) {
   dropdownMenu.classList.remove('active');
 }
 });
 
-// опционально: закрытие по ESC
 document.addEventListener('keydown', (e) => {
 if (e.key === 'Escape') {
   dropdownMenu.classList.remove('active');
 }
+});
+
+
+// === MODAL ===
+const deleteProjectModal = document.getElementById('deleteProjectModal');
+const openDeleteModal = document.getElementById('openDeleteModal');
+const closeModalBtn = document.getElementById('closeModal');
+const cancelDelete = document.getElementById('cancelDelete');
+const modalOverlay = document.getElementById('modalOverlay');
+const confirmDelete = document.getElementById('confirmDelete');
+
+let timer = null;
+let seconds = 5;
+
+function openModal() {
+  deleteProjectModal.classList.add('is-open');
+  deleteProjectModal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+
+  confirmDelete.disabled = true;
+  seconds = 5;
+  confirmDelete.textContent = `Удалить (${seconds})`;
+
+  timer = setInterval(() => {
+    seconds--;
+    if (seconds > 0) {
+      confirmDelete.textContent = `Удалить (${seconds})`;
+    } else {
+      clearInterval(timer);
+      confirmDelete.disabled = false;
+      confirmDelete.textContent = 'Удалить';
+    }
+  }, 1000);
+}
+
+function closeModal() {
+  deleteProjectModal.classList.remove('is-open');
+  deleteProjectModal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+
+  clearInterval(timer);
+}
+
+openDeleteModal.addEventListener('click', openModal);
+closeModalBtn.addEventListener('click', closeModal);
+cancelDelete.addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', closeModal);
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeModal();
+  }
 });
