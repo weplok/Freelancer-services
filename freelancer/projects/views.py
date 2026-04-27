@@ -61,6 +61,7 @@ def all_projects_view(request):
         "has_filters": bool(request.GET),
         "reset_filters_url": reverse("all_projects"),
         "create_project_url": reverse("project_create"),
+        "page_title": "Все проекты",
     }
 
     # Помечаем, активны ли фильтры "Всё"
@@ -133,6 +134,7 @@ def project_view(request, project_slug):
     context = {
         "project": project_dc,
         "files": [],
+        "page_title": f"{project.name}",
     }
 
     files = FileModel.objects.filter(project=project).all()
@@ -158,6 +160,7 @@ def project_edit_view(request, project_slug):
     )
     context = {
         "project": project_dc,
+        "page_title": f"{project.name} - Изменить",
     }
     project_form = ProjectEditForm(data=request.POST or None, instance=project)
     if request.method == "POST":
@@ -193,6 +196,7 @@ def project_delete_select_files_view(request, project_slug):
     context = {
         "project": project_dc,
         "files": [],
+        "page_title": f"{project.name} - Удаление",
     }
 
     files = FileModel.objects.filter(project=project).all()
@@ -255,7 +259,12 @@ def project_create_view(request):
 
             return redirect("all_projects")
 
-    return render(request, "projects/project_create.html", {"project_form": project_form})
+    context = {
+        "project_form": project_form,
+        "page_title": "Создание проекта",
+    }
+
+    return render(request, "projects/project_create.html", context)
 
 
 @login_required()
@@ -293,7 +302,12 @@ def upload_file_view(request):
 
             return JsonResponse({"status": "ok"}, status=200)
 
-    return render(request, "projects/upload_file.html", {"upload_form": upload_form})
+    context = {
+        "upload_form": upload_form,
+        "page_title": "Создание проекта",
+    }
+
+    return render(request, "projects/upload_file.html", context)
 
 
 @login_required()
@@ -306,6 +320,7 @@ def upload_to_project_view(request, project_slug):
         "project_slug": project_slug,
         "project_uuid": project.uuid,
         "project_name": project.name,
+        "page_title": f"{project.name} - Загрузить",
     }
 
     last_file = FileModel.objects.filter(project=project).first()
@@ -334,7 +349,8 @@ def file_detail_view(request, project_slug, file_slug):
         "project": project,
         "file": file,
         "is_owner": is_owner,
-        "is_download_allowed": is_download_allowed
+        "is_download_allowed": is_download_allowed,
+        "page_title": f"{'.'.join(file.readable_filename.split('.')[:-1])} v{file.version}"
     }
 
     return render(request, "projects/file_detail.html", context)

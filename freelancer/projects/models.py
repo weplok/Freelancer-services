@@ -102,7 +102,11 @@ class FileModel(models.Model):
             self.readable_filename = f"{self.readable_filename}.{self.extension}"
 
         if not self.slug:
-            self.slug = slug_generate(f"{self.project.owner.username} {self.readable_filename} {self.version}")
+            if self.project:
+                owner = self.project.owner.username
+            else:
+                owner = "first"
+            self.slug = slug_generate(f"{owner} {self.readable_filename} {self.version}")
 
         if not self.version_comment:
             self.version_comment = f"Версия {self.version}"

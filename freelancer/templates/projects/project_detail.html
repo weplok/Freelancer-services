@@ -4,78 +4,78 @@
 
 {% block content %}
 <main class="container-main projects-page">
-  <div class="projects-page project-detail">
-    <div class="projects-page__header project-detail__header">
-      <div class="projects-page__title-block project-detail__title-block">
-        <div class="project-detail__breadcrumb">
-          <a class="project-detail__breadcrumb-link" href="{% url 'all_projects' %}">Проекты</a>
-          <span class="project-detail__breadcrumb-sep">/</span>
-          <span class="project-detail__breadcrumb-current">{{ project.name }}</span>
-        </div>
-      </div>
-
-      <div class="project-detail__actions">
-        <a class="button button--outline project-detail__action"
-           href="{% url 'project_edit' project_slug=project.slug %}">
-          <button class="btn btn--default btn--sm" type="button">
-            Редактировать
-          </button>
-        </a>
-      </div>
-    </div>
-
-    <section class="card project-detail__hero">
-      <div class="project-card__stripe project-card__stripe--{{ project.status_key|default:'default' }}"></div>
-
-      <div class="project-detail__hero-content">
-        <div class="project-card__head project-detail__hero-head">
-          <div class="project-card__heading">
-            <h1 class="projects-page__title project-detail__title">{{ project.name }}</h1>
-            <div class="project-card__customer project-detail__customer">
-              Заказчик: <span class="project-card__customer-name">{{ project.customer_name|customer_urlize }}</span>
+    <div class="projects-page project-detail">
+        <div class="projects-page__header project-detail__header">
+            <div class="projects-page__title-block project-detail__title-block">
+                <div class="project-detail__breadcrumb">
+                    <a class="project-detail__breadcrumb-link" href="{% url 'all_projects' %}">Проекты</a>
+                    <span class="project-detail__breadcrumb-sep">/</span>
+                    <span class="project-detail__breadcrumb-current">{{ project.name }}</span>
+                </div>
             </div>
-          </div>
 
-          <span class="badge badge--{{ project.status_badge_class|default:'outline' }} project-card__status">
+            <div class="project-detail__actions">
+                <a class="button button--outline project-detail__action"
+                   href="{% url 'project_edit' project_slug=project.slug %}">
+                    <button class="btn btn--default btn--sm" type="button">
+                        Редактировать
+                    </button>
+                </a>
+            </div>
+        </div>
+
+        <section class="card project-detail__hero">
+            <div class="project-card__stripe project-card__stripe--{{ project.status_key|default:'default' }}"></div>
+
+            <div class="project-detail__hero-content">
+                <div class="project-card__head project-detail__hero-head">
+                    <div class="project-card__heading">
+                        <h1 class="projects-page__title project-detail__title">{{ project.name }}</h1>
+                        <div class="project-card__customer project-detail__customer">
+                            Заказчик: <span class="project-card__customer-name">{{ project.customer_name|customer_urlize }}</span>
+                        </div>
+                    </div>
+
+                    <span class="badge badge--{{ project.status_badge_class|default:'outline' }} project-card__status">
           {{ project.status_label }}
         </span>
-        </div>
+                </div>
 
-        <div class="project-detail__meta-grid">
-          <div class="project-detail__meta-card">
-            <span class="project-detail__meta-label">Создан</span>
-            <span class="project-detail__meta-value">{{ project.created_date|default:'—' }}</span>
-            <span class="project-card__meta-note">{{ project.created_time|default:'' }}</span>
-          </div>
+                <div class="project-detail__meta-grid">
+                    <div class="project-detail__meta-card">
+                        <span class="project-detail__meta-label">Создан</span>
+                        <span class="project-detail__meta-value">{{ project.created_date|default:'—' }}</span>
+                        <span class="project-card__meta-note">{{ project.created_time|default:'' }}</span>
+                    </div>
 
-          <div class="project-detail__meta-card project-detail__meta-card--wide">
-            <span class="project-detail__meta-label">Заказчик</span>
-            <span class="project-detail__meta-value project-detail__meta-value--wrap">
+                    <div class="project-detail__meta-card project-detail__meta-card--wide">
+                        <span class="project-detail__meta-label">Заказчик</span>
+                        <span class="project-detail__meta-value project-detail__meta-value--wrap">
             {{ project.customer_name|customer_urlize }}
           </span>
-          </div>
-        </div>
+                    </div>
+                </div>
 
-        <div class="project-detail__description card">
-          <div class="project-detail__section-head">
-            <h3 class="project-detail__section-title">Описание</h3>
-          </div>
-          <div class="project-detail__text">
-            {{ project.description|urlize|linebreaksbr }}
-          </div>
-        </div>
-      </div>
-    </section>
+                <div class="project-detail__description card">
+                    <div class="project-detail__section-head">
+                        <h3 class="project-detail__section-title">Описание</h3>
+                    </div>
+                    <div class="project-detail__text">
+                        {{ project.description|urlize|linebreaksbr }}
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <section class="project-detail__files">
-      <div class="project-detail__section-head">
+        <section class="project-detail__files">
+            <div class="project-detail__section-head">
         <span>
           <h2 class="project-detail__section-title">
             <span>Файлы проекта</span>
             <span class="project-detail__files-count">{{ files|length }}</span>
           </h2>
         </span>
-        <span>
+                <span>
           <a href="{% url 'upload_file_to_project' project_slug=project.slug %}">
             <button class="btn btn--default btn--sm">
               Загрузить файл
@@ -87,58 +87,60 @@
             </button>
           </a>
         </span>
-      </div>
-
-      {% if files %}
-      <div class="project-files-grid">
-        {% for file in files %}
-        <article class="card project-file-card">
-          <div class="project-file-card__stripe"></div>
-
-          <div class="project-file-card__body">
-            <div class="project-file-card__top">
-              <div class="project-file-card__icon" aria-hidden="true">
-                <span style="text-transform: uppercase;">{{ file.extension }}</span>
-              </div>
-
-              <div class="project-file-card__head">
-                <div class="project-file-card__name-row">
-                  <h3 class="project-file-card__name">{{ file.filename }}</h3>
-                </div>
-
-                <div class="project-file-card__version">
-                  Версия
-                  <span class="project-file-card__version-value">v{{ file.version }}</span>
-                </div>
-              </div>
             </div>
 
-            <div class="project-file-card__comment">
-              {{ file.version_comment|default:"Без комментария" }}
-            </div>
+            {% if files %}
+            <div class="project-files-grid">
+                {% for file in files %}
+                <a href="{% url 'file_detail' project_slug=file.project.slug file_slug=file.slug %}">
+                    <article class="card project-file-card">
+                        <div class="project-file-card__stripe"></div>
 
-            <div class="project-file-card__meta">
-              <div class="project-file-card__meta-item">
-                <span class="project-file-card__meta-label">Загружен</span>
-                <span class="project-file-card__meta-value">{{ file.uploaded_at|date:"d.m.Y" }}</span>
-              </div>
+                        <div class="project-file-card__body">
+                            <div class="project-file-card__top">
+                                <div class="project-file-card__icon" aria-hidden="true">
+                                    <span style="text-transform: uppercase;">{{ file.extension }}</span>
+                                </div>
 
-              <div class="project-file-card__meta-item">
-                <span class="project-file-card__meta-label">Время</span>
-                <span class="project-file-card__meta-value">{{ file.uploaded_at|date:"H:i" }}</span>
-              </div>
+                                <div class="project-file-card__head">
+                                    <div class="project-file-card__name-row">
+                                        <h3 class="project-file-card__name">{{ file.readable_filename }}</h3>
+                                    </div>
+
+                                    <div class="project-file-card__version">
+                                        Версия
+                                        <span class="project-file-card__version-value">v{{ file.version }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="project-file-card__comment">
+                                {{ file.version_comment|default:"Без комментария" }}
+                            </div>
+
+                            <div class="project-file-card__meta">
+                                <div class="project-file-card__meta-item">
+                                    <span class="project-file-card__meta-label">Загружен</span>
+                                    <span class="project-file-card__meta-value">{{ file.uploaded_at|date:"d.m.Y" }}</span>
+                                </div>
+
+                                <div class="project-file-card__meta-item">
+                                    <span class="project-file-card__meta-label">Время</span>
+                                    <span class="project-file-card__meta-value">{{ file.uploaded_at|date:"H:i" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </a>
+                {% endfor %}
             </div>
-          </div>
-        </article>
-        {% endfor %}
-      </div>
-      {% else %}
-      <div class="card projects-empty project-detail__empty">
-        <div class="projects-empty__title">Файлов пока нет</div>
-        <p class="projects-empty__description">В этом проекте ещё не загружали документы.</p>
-      </div>
-      {% endif %}
-    </section>
-  </div>
+            {% else %}
+            <div class="card projects-empty project-detail__empty">
+                <div class="projects-empty__title">Файлов пока нет</div>
+                <p class="projects-empty__description">В этом проекте ещё не загружали документы.</p>
+            </div>
+            {% endif %}
+        </section>
+    </div>
 </main>
 {% endblock %}

@@ -3,9 +3,15 @@ const root = document.documentElement;
 const themeToggle = document.querySelector('[data-theme-toggle]');
 
 themeToggle?.addEventListener('click', () => {
-  root.dataset.theme =
-    root.dataset.theme === 'dark' ? 'light' : 'dark';
+  const newTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  root.dataset.theme = newTheme;
+
+  setThemeCookie(newTheme);
 });
+
+function setThemeCookie(theme) {
+  document.cookie = `theme=${theme}; path=/; max-age=31536000`; // 1 год
+}
 
 
 // === MOBILE MENU ===

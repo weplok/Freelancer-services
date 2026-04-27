@@ -1,3 +1,6 @@
+import random
+
+import requests
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -12,11 +15,23 @@ def signup_view(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
+            if not user.avatar_url:
+                avatar_response = requests.get(
+                    url=f"https://picsum.photos/seed/{random.randint(1, 999999)}/200",
+                )
+                user.avatar_url = avatar_response.url
+                user.save()
             login(request, user)
             return redirect('profile')
     else:
         form = SignUpForm()
-    return render(request, 'accounts/signup.html', {'form': form})
+
+    context = {
+        'form': form,
+        "page_title": "Регистрация",
+    }
+
+    return render(request, 'accounts/signup.html', context)
 
 
 def login_view(request):
@@ -31,7 +46,13 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 return redirect('profile')
-    return render(request, 'accounts/login.html', {'form': form})
+
+    context = {
+        'form': form,
+        "page_title": "Аутентификация",
+    }
+
+    return render(request, 'accounts/login.html', context)
 
 
 def logout_view(request):
@@ -41,4 +62,5 @@ def logout_view(request):
 
 @login_required
 def personal_view(request):
-    return render(request, "accounts/profile.html")
+    context = {"page_title": f"Кабинет {request.user.username}"}
+    return render(request, "accounts/profile.html", context)

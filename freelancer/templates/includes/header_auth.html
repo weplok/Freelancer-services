@@ -51,7 +51,12 @@
 
             <div class="avatar-dropdown" id="avatarDropdown">
                 <div class="avatar" id="avatarTrigger">
-                    <img class="avatar__image" alt="Аватарка пользователя" src="https://picsum.photos/80?random=31">
+                    {% if user.avatar_url %}
+                    <img class="avatar__image" alt="Аватарка пользователя"
+                         src="{{ user.avatar_url }}">
+                    {% else %}
+                    <div class="avatar__fallback">{{ user.name|slice:"1" }}</div>
+                    {% endif %}
                 </div>
 
                 <div class="dropdown-menu" id="dropdownMenu">
@@ -60,13 +65,17 @@
                             <div class="dropdown-user">
 
                                 <div class="avatar">
+                                    {% if user.avatar_url %}
                                     <img class="avatar__image" alt="Аватарка пользователя"
-                                         src="https://picsum.photos/80?random=31">
+                                         src="{{ user.avatar_url }}">
+                                    {% else %}
+                                    <div class="avatar__fallback">{{ user.name|slice:"1" }}</div>
+                                    {% endif %}
                                 </div>
 
                                 <div class="dropdown-user__info">
-                                    <div class="dropdown-user__name">Имя</div>
-                                    <div class="dropdown-user__nickname">@nickname</div>
+                                    <div class="dropdown-user__name">{{ user.name }}</div>
+                                    <div class="dropdown-user__nickname">@{{ user.username }}</div>
                                     <a href="{% url 'profile' %}">
                                         <button class="btn btn--link dropdown-user__link" type="button">
                                             Перейти в профиль
@@ -81,7 +90,11 @@
 
                         <div class="dropdown-menu__item">
                             <label class="switch-row" style="display:flex; align-items:center; gap:0.75rem;">
-                                <button class="switch" type="button" data-state="unchecked" aria-pressed="false"
+                                <button
+                                        class="switch"
+                                        type="button"
+                                        data-state={% if request.COOKIES.theme == 'light' %}"unchecked"{% else %}"checked"{% endif %}
+                                        aria-pressed="false"
                                         data-switch
                                         data-theme-toggle>
                                     <span class="switch__thumb"></span>

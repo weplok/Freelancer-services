@@ -39,5 +39,5 @@ def create_iam_token():
 
 
 iam_token = create_iam_token()
-with open("iam_token.txt", "w", encoding="utf-8") as token_file:
+with open("../freelancer/iam_token.txt", "w", encoding="utf-8") as token_file:
     token_file.write(iam_token)

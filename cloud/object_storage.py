@@ -1,7 +1,7 @@
 import requests
 import datetime
 
-with open("iam_token.txt", "r", encoding="utf-8") as token_file:
+with open("../freelancer/iam_token.txt", "r", encoding="utf-8") as token_file:
     IAM_TOKEN = token_file.read()
 
 BUCKET_NAME = "test-without-versions"

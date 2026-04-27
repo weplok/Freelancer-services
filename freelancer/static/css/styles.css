@@ -2740,6 +2740,7 @@ svg {
   flex-wrap: wrap;
   gap: .75rem;
   justify-content: flex-end;
+  padding-top: 15px;
 }
 
 .project-detail__action {
@@ -2869,6 +2870,12 @@ svg {
   align-items: stretch;
   min-height: 12rem;
   padding: 0;
+}
+
+.project-file-card:hover {
+    transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  background-color: hsl(var(--muted));
 }
 
 .project-file-card__stripe {
