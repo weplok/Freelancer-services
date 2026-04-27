@@ -13,7 +13,7 @@ class ProjectModel(models.Model):
         CANCELED = "canceled", "Отменён"
         FINISHED = "finished", "Завершён"
 
-    uuid = models.UUIDField(editable=False)
+    uuid = models.CharField(max_length=36, editable=False)
     name = models.CharField(max_length=254)  # Название проекта
     slug = models.SlugField(unique=True, blank=True)  # Уникальный слаг
     description = models.TextField()  # Общее описание проекта

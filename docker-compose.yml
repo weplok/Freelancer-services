@@ -7,18 +7,48 @@ services:
     environment:
       - DJANGO_KEY=${DJANGO_KEY}
       - DJANGO_DEBUG=${DJANGO_DEBUG}
+
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_USER=${REDIS_USER}
       - REDIS_USER_PASSWORD=${REDIS_USER_PASSWORD}
+
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+      - BUCKET_NAME=${BUCKET_NAME}
+      - JWT_KEY_PATH=${JWT_KEY_PATH}
     volumes:
       - ./freelancer:/freelancer
     command: >
       sh -c '
-        python manage.py makemigrations &
+        python manage.py makemigrations &&
         python manage.py migrate &
-        python manage.py rqworker &
+        mkdir "media/" &
+        mkdir "media/tmp/" &
         python manage.py runserver 0.0.0.0:8000
       '
+    depends_on:
+      redis:
+        condition: service_healthy
+      database:
+          condition: service_healthy
+
+  database:
+    image: postgres:14.6-alpine
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    hostname: postgresdb
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      interval: 5s
+      retries: 5
 
   redis:
     image: redis:latest
@@ -52,9 +82,70 @@ services:
       '
     healthcheck:
       test: [ "CMD", "redis-cli", "-a", "$REDIS_PASSWORD", "ping" ]
-      interval: 30s
-      timeout: 10s
+      interval: 5s
+      timeout: 5s
       retries: 5
     restart: unless-stopped
     tty: true
     stdin_open: true
+
+  worker:
+    build:
+      context: .
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_USER_PASSWORD=${REDIS_USER_PASSWORD}
+      - JWT_KEY_PATH=${JWT_KEY_PATH}
+    hostname: worker
+    entrypoint: celery
+    command:
+      -A celery_app.app worker --loglevel=info
+    volumes:
+      - ./freelancer:/freelancer
+    links:
+      - redis
+    depends_on:
+      - redis
+
+  beat:
+    build:
+      context: .
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_USER_PASSWORD=${REDIS_USER_PASSWORD}
+      - JWT_KEY_PATH=${JWT_KEY_PATH}
+    hostname: beat
+    entrypoint: celery
+    command:
+      -A celery_app.app beat --loglevel=info
+    volumes:
+      - ./freelancer:/freelancer
+    links:
+      - redis
+    depends_on:
+      - redis
+
+  flower:
+    build:
+      context: .
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_USER_PASSWORD=${REDIS_USER_PASSWORD}
+    hostname: flower
+    entrypoint: celery
+    command:
+      -A celery_app.app flower --basic-auth=admin:admin
+    volumes:
+      - ./freelancer:/freelancer
+    links:
+      - redis
+    depends_on:
+      - redis
+    ports:
+      - "5555:5555"
+
+volumes:
+  postgres_data:

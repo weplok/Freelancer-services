@@ -39,8 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "django_rq",
-    "django_crontab",
     "core",
     "homepage",
     "accounts",
@@ -82,9 +80,13 @@ WSGI_APPLICATION = 'freelancer.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": f"{os.getenv('POSTGRES_DB')}",
+        "USER": f"{os.getenv('POSTGRES_USER')}",
+        "PASSWORD": f"{os.getenv('POSTGRES_PASSWORD')}",
+        "HOST": "postgresdb",
+        "PORT": "5432",
     }
 }
 
@@ -137,34 +139,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+BUCKET_NAME = os.getenv("BUCKET_NAME")
+JWT_KEY_PATH = os.getenv("JWT_KEY_PATH")
+
+REDIS_USER = os.getenv('REDIS_USER')
+REDIS_USER_PASSWORD = os.getenv('REDIS_USER_PASSWORD')
+
+CELERY_BROKER_URL = f"redis://{REDIS_USER}:{REDIS_USER_PASSWORD}@redis:6379/2"
+
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f"redis://{os.getenv('REDIS_USER')}:{os.getenv('REDIS_USER_PASSWORD')}@redis:6379",
+        "LOCATION": f"redis://{REDIS_USER}:{REDIS_USER_PASSWORD}@redis:6379",
         "OPTIONS": {
             "db": "0",
         }
     }
 }
-
-RQ_QUEUES = {
-    'default': {
-        'HOST': 'redis',
-        'PORT': 6379,
-        'DB': 1,
-        'USERNAME': os.getenv('REDIS_USER'),
-        'PASSWORD': os.getenv('REDIS_USER_PASSWORD'),
-        'DEFAULT_TIMEOUT': 360,
-        'DEFAULT_RESULT_TTL': 800,
-    },
-    'high': {
-        'HOST': 'redis',
-        'PORT': 6379,
-        'DB': 1,
-    },
-}
-RQ_SHOW_ADMIN_LINK = True
-
-CRONJOBS = [
-    ("*/5 * * * *", "core.tasks.task_name"),
-]

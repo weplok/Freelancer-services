@@ -10,3 +10,4 @@ tmp
 iam.json
 iam_token.txt
 redisdata
+celerybeat-schedule
