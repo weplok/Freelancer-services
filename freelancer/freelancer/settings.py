@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "django_rq",
+    "django_crontab",
+    "core",
     "homepage",
     "accounts",
     "projects",
@@ -162,3 +164,7 @@ RQ_QUEUES = {
     },
 }
 RQ_SHOW_ADMIN_LINK = True
+
+CRONJOBS = [
+    ("*/5 * * * *", "core.tasks.task_name"),
+]

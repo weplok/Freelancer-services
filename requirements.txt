@@ -5,3 +5,4 @@ requests==2.33.0
 yandexcloud==0.383.0
 django-redis==5.2.0
 django-rq==4.1.0
+django-crontab==0.7.1
