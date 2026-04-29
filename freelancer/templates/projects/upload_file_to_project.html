@@ -22,9 +22,9 @@
     <div class="card project-create__side">
 
       <div class="card__header">
-        <div class="card__title">Первая версия проекта</div>
+        <div class="card__title">Новая версия проекта</div>
         <div class="card__description">
-          Предзагрузите первую версию файла для определения настроек проекта
+          Загрузите новую версию проекта с изменениями
         </div>
       </div>
 
@@ -81,7 +81,7 @@
           <div class="form__message" id="form-message" hidden>Ошибка валидации появится здесь.</div>
 
           <div class="demo-row">
-            <button class="btn btn--default btn--sm" type="submit" name="upload_submit">Предзагрузить</button>
+            <button class="btn btn--default btn--sm" type="submit" name="upload_submit">Загрузить</button>
             <button class="btn btn--outline btn--sm" type="button" id="reset-btn">Отменить выбор</button>
           </div>
         </form>
@@ -103,11 +103,11 @@
 
           <div class="project-form__field">
             <label class="label">Читаемое название</label>
-            <input class="input" name="readable_filename" placeholder="Читаемое название">
+            <input class="input" name="readable_filename" placeholder="Название при скачивании файла">
           </div>
 
           <div class="project-form__field">
-            <label class="label">Описание</label>
+            <label class="label">Комментарий</label>
             <textarea class="textarea" name="version_comment"
                       placeholder="Комментарий к версии"></textarea>
           </div>
@@ -134,6 +134,7 @@
 
 </main>
 
+<input type="hidden" id="isFirstUpload" value="false">
 <script src="{% static 'projects/js/dragNdrop.js' %}"></script>
 
 {% endblock %}

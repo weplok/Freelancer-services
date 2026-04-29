@@ -7,6 +7,9 @@ services:
     environment:
       - DJANGO_KEY=${DJANGO_KEY}
       - DJANGO_DEBUG=${DJANGO_DEBUG}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - DJANGO_INTERNAL_IPS=${DJANGO_INTERNAL_IPS}
+      - DJANGO_ALLOW_REVERSE=${DJANGO_ALLOW_REVERSE}
 
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_USER=${REDIS_USER}
@@ -23,7 +26,8 @@ services:
     command: >
       sh -c '
         python manage.py makemigrations &&
-        python manage.py migrate &
+        python manage.py migrate &&
+        python manage.py collectstatic &&
         mkdir "media/" &
         mkdir "media/tmp/" &
         python manage.py runserver 0.0.0.0:8000

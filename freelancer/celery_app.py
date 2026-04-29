@@ -11,10 +11,10 @@ app.conf.broker_url = settings.CELERY_BROKER_URL
 app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
-    'create-iam-token-every-1-hour': {
-        'task': 'projects.tasks.create_iam_token',
-        'schedule': 1.0 * 60 * 60,
+    "create-iam-token-every-1-hour": {
+        "task": "projects.tasks.create_iam_token",
+        "schedule": 1.0 * 60 * 60,
     },
 }
 
-app.conf.timezone = 'UTC'
+app.conf.timezone = "UTC"

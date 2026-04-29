@@ -18,7 +18,9 @@ class ProjectModel(models.Model):
     slug = models.SlugField(unique=True, blank=True)  # Уникальный слаг
     description = models.TextField()  # Общее описание проекта
     customer = models.CharField(max_length=100)  # Заказчик проекта
-    created_at = models.DateTimeField(auto_now_add=True)  # Дата создания проекта
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )  # Дата создания проекта
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
@@ -35,7 +37,9 @@ class ProjectModel(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slug_generate(f"{self.owner.username} {self.name} {random.randint(1000, 9999)}")
+            self.slug = slug_generate(
+                f"{self.owner.username} {self.name} {random.randint(1000, 9999)}"
+            )
         super().save(*args, **kwargs)
 
     @staticmethod
@@ -57,13 +61,21 @@ class ProjectModel(models.Model):
 
 class FileModel(models.Model):
     url = models.URLField(max_length=2000)  # Прямая ссылка на скачивание
-    dirty_file_url = models.URLField(max_length=2000, null=True)  # Ссылка на грязный файл для предпросмотра
+    dirty_file_url = models.URLField(
+        max_length=2000, null=True
+    )  # Ссылка на грязный файл для предпросмотра
     filename = models.CharField(max_length=254)  # Название файла на сервере
     slug = models.SlugField(unique=True, blank=True)
-    readable_filename = models.CharField(max_length=254)  # Название файла при скачивании
+    readable_filename = models.CharField(
+        max_length=254
+    )  # Название файла при скачивании
     bucket = models.CharField(max_length=63)  # Бакет, в котором хранится файл
-    object_path = models.CharField(max_length=2000)  # Путь до объекта с файлом на бакете
-    upload_id = models.UUIDField(editable=False, null=True)  # Временный ID во время загрузки в объектное хранилище
+    object_path = models.CharField(
+        max_length=2000
+    )  # Путь до объекта с файлом на бакете
+    upload_id = models.UUIDField(
+        editable=False, null=True
+    )  # Временный ID во время загрузки в объектное хранилище
     extension = models.CharField(max_length=8)  # Расширение файла
     version = models.PositiveIntegerField(default=0)  # Номер версии (от 0)
     version_comment = models.TextField()  # Комментарий к версии
@@ -81,8 +93,9 @@ class FileModel(models.Model):
 
     def get_version(self):
         if self.project:
-            last_version = FileModel.objects.filter(project=self.project) \
-                .aggregate(models.Max('version'))['version__max']
+            last_version = FileModel.objects.filter(
+                project=self.project
+            ).aggregate(models.Max("version"))["version__max"]
 
             if last_version is None:
                 return 0
@@ -99,14 +112,18 @@ class FileModel(models.Model):
             self.extension = self.filename.split(".")[-1]
 
         if not self.readable_filename.endswith(self.extension):
-            self.readable_filename = f"{self.readable_filename}.{self.extension}"
+            self.readable_filename = (
+                f"{self.readable_filename}.{self.extension}"
+            )
 
         if not self.slug:
             if self.project:
                 owner = self.project.owner.username
             else:
                 owner = "first"
-            self.slug = slug_generate(f"{owner} {self.readable_filename} {self.version}")
+            self.slug = slug_generate(
+                f"{owner} {self.readable_filename} {self.version}"
+            )
 
         if not self.version_comment:
             self.version_comment = f"Версия {self.version}"
@@ -121,9 +138,38 @@ class FileModel(models.Model):
 
 def slug_generate(string: str):
     ru_to_en = {
-        "а": "a", "б": "b", "в": "v", "г": "g", "д": "d", "е": "e", "ё": "yo", "ж": "zh", "з": "z", "и": "i", "й": "y",
-        "к": "k", "л": "l", "м": "m", "н": "n", "о": "o", "п": "p", "р": "r", "с": "s", "т": "t", "у": "u", "ф": "f",
-        "х": "h", "ц": "ts", "ч": "ch", "ш": "sh", "щ": "sh", "ъ": "y", "ы": "i", "ь": "y", "э": "e", "ю": "u",
+        "а": "a",
+        "б": "b",
+        "в": "v",
+        "г": "g",
+        "д": "d",
+        "е": "e",
+        "ё": "yo",
+        "ж": "zh",
+        "з": "z",
+        "и": "i",
+        "й": "y",
+        "к": "k",
+        "л": "l",
+        "м": "m",
+        "н": "n",
+        "о": "o",
+        "п": "p",
+        "р": "r",
+        "с": "s",
+        "т": "t",
+        "у": "u",
+        "ф": "f",
+        "х": "h",
+        "ц": "ts",
+        "ч": "ch",
+        "ш": "sh",
+        "щ": "sh",
+        "ъ": "y",
+        "ы": "i",
+        "ь": "y",
+        "э": "e",
+        "ю": "u",
         "я": "ya",
     }
     slug = ""

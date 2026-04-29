@@ -45,7 +45,16 @@ def read_in_chunks(file, chunk_size=10 * 1024 * 1024):
 
 
 # Загружает чанк файла в хранилище
-def upload_part(bucket, key, headers, upload_id, cache_upload_id, uploaded_parts, part_number, chunk):
+def upload_part(
+    bucket,
+    key,
+    headers,
+    upload_id,
+    cache_upload_id,
+    uploaded_parts,
+    part_number,
+    chunk,
+):
     url = f"https://storage.yandexcloud.net/{bucket}/{key}?partNumber={part_number}&uploadId={upload_id}"
     r = requests.put(url, headers=headers, data=chunk)
     e_tag = r.headers.get("ETag")
@@ -58,11 +67,13 @@ def upload_part(bucket, key, headers, upload_id, cache_upload_id, uploaded_parts
 
 
 # Сборка объекта в хранилище и завершение загрузки
-def complete_upload(bucket, key, iam_token, upload_id, filename, e_tags, cache_upload_id):
-    url = f"https://storage.yandexcloud.net/{bucket}/{key}?uploadId={upload_id}"
-    headers = {
-        "Authorization": f"Bearer {iam_token}"
-    }
+def complete_upload(
+    bucket, key, iam_token, upload_id, filename, e_tags, cache_upload_id
+):
+    url = (
+        f"https://storage.yandexcloud.net/{bucket}/{key}?uploadId={upload_id}"
+    )
+    headers = {"Authorization": f"Bearer {iam_token}"}
 
     root = ET.Element("CompleteMultipartUpload")
     for item in e_tags:
@@ -78,7 +89,9 @@ def complete_upload(bucket, key, iam_token, upload_id, filename, e_tags, cache_u
     tmp_name = f"media/tmp/{randint(10000000, 99999999)}.xml"
     tree.write(tmp_name, encoding="utf-8", xml_declaration=True)
 
-    response = requests.post(url, headers=headers, files={"file": open(tmp_name, "rb")})
+    response = requests.post(
+        url, headers=headers, files={"file": open(tmp_name, "rb")}
+    )
 
     cache.set(cache_upload_id, 50, timeout=5 * 60)
 
@@ -96,34 +109,25 @@ def object_upload(bucket, key, iam_token, filename, cache_upload_id):
 
     with ThreadPoolExecutor(max_workers=6) as executor:
         e_tags = list(
-            executor.map(lambda p: upload_part(bucket, key, headers, upload_id, cache_upload_id, uploaded_parts, *p),
-                         parts))
+            executor.map(
+                lambda p: upload_part(
+                    bucket,
+                    key,
+                    headers,
+                    upload_id,
+                    cache_upload_id,
+                    uploaded_parts,
+                    *p,
+                ),
+                parts,
+            )
+        )
 
-    result = complete_upload(bucket, key, iam_token, upload_id, filename, e_tags, cache_upload_id)
+    result = complete_upload(
+        bucket, key, iam_token, upload_id, filename, e_tags, cache_upload_id
+    )
 
     return result
-
-
-def delete_files(file_ids_list: list = None, project_id: str = None):
-    with open("iam_token.txt", "r", encoding="utf-8") as token_file:
-        iam_token = token_file.read()
-    headers = {"Authorization": f"Bearer {iam_token}"}
-
-    if file_ids_list:
-        files = FileModel.objects.filter(id__in=file_ids_list)
-
-    elif project_id:
-        files = FileModel.objects.filter(project=project_id).all()
-
-    else:
-        raise AttributeError("Не передан один из обязательных атрибутов: file_ids_list, project_id")
-
-    for file in files:
-        requests.delete(file.url, headers=headers)
-
-    files.delete()
-
-    return True
 
 
 @shared_task
@@ -136,34 +140,31 @@ def create_jwt():
     key_path = os.getenv("JWT_KEY_PATH")
 
     # Чтение закрытого ключа из JSON-файла
-    with open(key_path, 'r', encoding="utf-8") as f:
+    with open(key_path, "r", encoding="utf-8") as f:
         obj = f.read()
         obj = json.loads(obj)
-        private_key = obj['private_key']
-        key_id = obj['id']
-        service_account_id = obj['service_account_id']
+        private_key = obj["private_key"]
+        key_id = obj["id"]
+        service_account_id = obj["service_account_id"]
 
     sa_key = {
         "id": key_id,
         "service_account_id": service_account_id,
-        "private_key": private_key
+        "private_key": private_key,
     }
 
     now = int(time.time())
 
     payload = {
-        'aud': 'https://iam.api.cloud.yandex.net/iam/v1/tokens',
-        'iss': service_account_id,
-        'iat': now,
-        'exp': now + 3600
+        "aud": "https://iam.api.cloud.yandex.net/iam/v1/tokens",
+        "iss": service_account_id,
+        "iat": now,
+        "exp": now + 3600,
     }
 
     # Формирование JWT.
     encoded_token = jwt.encode(
-        payload,
-        private_key,
-        algorithm='PS256',
-        headers={'kid': key_id}
+        payload, private_key, algorithm="PS256", headers={"kid": key_id}
     )
 
     return (encoded_token, sa_key)
@@ -176,9 +177,7 @@ def create_iam_token():
 
     sdk = yandexcloud.SDK(service_account_key=sa_key)
     iam_service = sdk.client(IamTokenServiceStub)
-    iam_token = iam_service.Create(
-        CreateIamTokenRequest(jwt=encoded_jwt)
-    )
+    iam_token = iam_service.Create(CreateIamTokenRequest(jwt=encoded_jwt))
 
     with open("iam_token.txt", "w", encoding="utf-8") as token_file:
         token_file.write(iam_token.iam_token)

@@ -2,9 +2,11 @@ import datetime
 import uuid
 from dataclasses import dataclass
 
+import requests
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
+from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -19,13 +21,16 @@ class ProjectDataClass:
     """
     Датакласс содержит необходимые данные для отрисовки в template карточек проектов
     """
+
     name: str = "name"  # Название проекта
     description: str = "default"  # Описание проекта
 
     status_label: str = "status"  # Надпись для пользователя
     status_key: str = "default"  # Цвет карточки.
     # Варианты: "default", "in_progress", "in_revision", "finished", "canceled", "new"
-    status_badge_class: str = "default"  # Класс бейджа. Варианты: "default", "secondary", "outline", "destructive"
+    status_badge_class: str = (
+        "default"  # Класс бейджа. Варианты: "default", "secondary", "outline", "destructive"
+    )
 
     customer_name: str = "customer"  # Имя заказчика
     slug: str = "slug"  # уникальный slug конкретного проекта
@@ -45,10 +50,26 @@ def all_projects_view(request):
         "status_filters": {
             "all": {"value": "all", "label": "Все", "active": True},
             "new": {"value": "new", "label": "Новые", "active": False},
-            "in_progress": {"value": "in_progress", "label": "В работе", "active": False},
-            "in_revision": {"value": "in_revision", "label": "На доработке", "active": False},
-            "canceled": {"value": "canceled", "label": "Отменены", "active": False},
-            "finished": {"value": "finished", "label": "Завершены", "active": False},
+            "in_progress": {
+                "value": "in_progress",
+                "label": "В работе",
+                "active": False,
+            },
+            "in_revision": {
+                "value": "in_revision",
+                "label": "На доработке",
+                "active": False,
+            },
+            "canceled": {
+                "value": "canceled",
+                "label": "Отменены",
+                "active": False,
+            },
+            "finished": {
+                "value": "finished",
+                "label": "Завершены",
+                "active": False,
+            },
         },
         "customer_filters": {
             "all": {"value": "all", "label": "Все", "active": True},
@@ -62,8 +83,12 @@ def all_projects_view(request):
     }
 
     # Помечаем, активны ли фильтры "Всё"
-    context["status_filters"]["all"]["active"] = True if context["current_status"] in ("", "all") else False
-    context["customer_filters"]["all"]["active"] = True if context["current_customer"] in ("", "all") else False
+    context["status_filters"]["all"]["active"] = (
+        True if context["current_status"] in ("", "all") else False
+    )
+    context["customer_filters"]["all"]["active"] = (
+        True if context["current_customer"] in ("", "all") else False
+    )
 
     # Получаем списки проектов и заказчиков пользователя
     user_projects = ProjectModel.objects.filter(owner=request.user).all()
@@ -81,12 +106,18 @@ def all_projects_view(request):
     # Если стоит фильтр на статус, фильтруем проекты
     if context["current_status"] not in ("", "all"):
         context["status_filters"][context["current_status"]]["active"] = True
-        user_projects = user_projects.filter(status=context["current_status"]).all()
+        user_projects = user_projects.filter(
+            status=context["current_status"]
+        ).all()
 
     # Если стоит фильтр на заказчика, фильтруем проекты
     if context["current_customer"] not in ("", "all"):
-        context["customer_filters"][context["current_customer"]]["active"] = True
-        user_projects = user_projects.filter(customer=context["current_customer"]).all()
+        context["customer_filters"][context["current_customer"]][
+            "active"
+        ] = True
+        user_projects = user_projects.filter(
+            customer=context["current_customer"]
+        ).all()
 
     # Собираем только релевантные проекты в датаклассы
     for project in user_projects:
@@ -102,8 +133,12 @@ def all_projects_view(request):
 
         if last_file:
             project_dc.last_version = last_file.version
-            project_dc.last_upload_date = last_file.uploaded_at.strftime("%d.%m.%Y")
-            project_dc.last_upload_time = last_file.uploaded_at.strftime("%H:%m")
+            project_dc.last_upload_date = last_file.uploaded_at.strftime(
+                "%d.%m.%Y"
+            )
+            project_dc.last_upload_time = last_file.uploaded_at.strftime(
+                "%H:%m"
+            )
 
         context["projects"].append(project_dc)
 
@@ -113,6 +148,13 @@ def all_projects_view(request):
 @login_required()
 def project_view(request, project_slug):
     project = ProjectModel.objects.filter(slug=project_slug).first()
+    if not project:
+        return render(
+            request,
+            "404.html",
+            {"message": "Этот проект не существует :("},
+            status=404,
+        )
     if project.owner != request.user:
         return JsonResponse({"status": "401"}, status=401)
 
@@ -143,6 +185,13 @@ def project_view(request, project_slug):
 @login_required()
 def project_edit_view(request, project_slug):
     project = ProjectModel.objects.filter(slug=project_slug).first()
+    if not project:
+        return render(
+            request,
+            "404.html",
+            {"message": "Этот проект не существует :("},
+            status=404,
+        )
     if project.owner != request.user:
         return JsonResponse({"status": "401"}, status=401)
 
@@ -172,6 +221,13 @@ def project_edit_view(request, project_slug):
 @login_required()
 def project_delete_select_files_view(request, project_slug):
     project = ProjectModel.objects.filter(slug=project_slug).first()
+    if not project:
+        return render(
+            request,
+            "404.html",
+            {"message": "Этот проект не существует :("},
+            status=404,
+        )
     if project.owner != request.user:
         return JsonResponse({"status": "401"}, status=401)
 
@@ -187,7 +243,9 @@ def project_delete_select_files_view(request, project_slug):
     last_file = FileModel.objects.filter(project=project).last()
     if last_file:
         project_dc.last_version = last_file.version
-        project_dc.last_upload_date = last_file.uploaded_at.strftime("%d.%m.%Y")
+        project_dc.last_upload_date = last_file.uploaded_at.strftime(
+            "%d.%m.%Y"
+        )
         project_dc.last_upload_time = last_file.uploaded_at.strftime("%H:%m")
 
     context = {
@@ -198,17 +256,26 @@ def project_delete_select_files_view(request, project_slug):
 
     files = FileModel.objects.filter(project=project).all()
     context["files"] = files
-    return render(request, "projects/project_files_delete_select.html", context)
+    return render(
+        request, "projects/project_files_delete_select.html", context
+    )
 
 
 @login_required()
 def confirm_delete_select_files_view(request, project_slug):
     project = ProjectModel.objects.filter(slug=project_slug).first()
+    if not project:
+        return render(
+            request,
+            "404.html",
+            {"message": "Этот проект не существует :("},
+            status=404,
+        )
     if project.owner != request.user:
         return JsonResponse({"status": "401"}, status=401)
 
     if request.method == "POST":
-        ids_to_delete = request.POST.getlist('file_ids')
+        ids_to_delete = request.POST.getlist("file_ids")
         if ids_to_delete:
             delete_files(file_ids_list=ids_to_delete)
             return redirect("project_detail", project_slug=project_slug)
@@ -218,6 +285,13 @@ def confirm_delete_select_files_view(request, project_slug):
 @login_required()
 def project_delete_view(request, project_slug):
     project = ProjectModel.objects.filter(slug=project_slug).first()
+    if not project:
+        return render(
+            request,
+            "404.html",
+            {"message": "Этот проект не существует :("},
+            status=404,
+        )
     if project.owner != request.user:
         return JsonResponse({"status": "401"}, status=401)
 
@@ -249,7 +323,9 @@ def project_create_view(request):
             )
             project.save()
 
-            unpinned_files = FileModel.objects.filter(project=None, upload_id=project_uuid).all()
+            unpinned_files = FileModel.objects.filter(
+                project=None, upload_id=project_uuid
+            ).all()
             for up in unpinned_files:
                 up.project = project
                 up.save()
@@ -269,8 +345,8 @@ def upload_file_view(request):
     upload_form = FileForm(data=request.POST or None)
     project_uuid = request.GET.get("uuid")
 
-    if request.method == 'POST':
-        raw_file = request.FILES.get('file')
+    if request.method == "POST":
+        raw_file = request.FILES.get("file")
         upload_id = request.POST.get("upload_id")
 
         upload_result = upload_file(raw_file, upload_id)
@@ -278,15 +354,21 @@ def upload_file_view(request):
         if upload_result["status"] == "ok":
             file = FileModel(
                 url=upload_result["url"],
-                dirty_file_url=upload_result["url"],  # TODO: делать ссылку на сжатый файл
+                dirty_file_url=upload_result[
+                    "url"
+                ],  # TODO: делать ссылку на сжатый файл
                 filename=upload_result["filename"],
                 bucket=upload_result["bucket"],
                 object_path=upload_result["object_path"],
             )
 
             file.version = file.get_version()
-            filename_without_extension, extension = file.filename.rsplit(sep=".", maxsplit=1)
-            file.readable_filename = f"{filename_without_extension} v{file.version}.{extension}"
+            filename_without_extension, extension = file.filename.rsplit(
+                sep=".", maxsplit=1
+            )
+            file.readable_filename = (
+                f"{filename_without_extension} v{file.version}.{extension}"
+            )
             file.extension = extension
             file.version_comment = f"Версия {file.version}"
 
@@ -299,6 +381,8 @@ def upload_file_view(request):
 
             return JsonResponse({"status": "ok"}, status=200)
 
+        return JsonResponse({"status": "error"}, status=404)
+
     context = {
         "upload_form": upload_form,
         "page_title": "Создание проекта",
@@ -310,6 +394,13 @@ def upload_file_view(request):
 @login_required()
 def upload_to_project_view(request, project_slug):
     project = ProjectModel.objects.filter(slug=project_slug).first()
+    if not project:
+        return render(
+            request,
+            "404.html",
+            {"message": "Этот проект не существует :("},
+            status=404,
+        )
     if project.owner != request.user:
         return JsonResponse({"status": "401"}, status=401)
 
@@ -323,39 +414,67 @@ def upload_to_project_view(request, project_slug):
     last_file = FileModel.objects.filter(project=project).first()
 
     if last_file:
-        file_info_form = FileInfoForm(data=request.POST or None, instance=last_file)
+        file_info_form = FileInfoForm(
+            data=request.POST or None, instance=last_file
+        )
         if request.method == "POST":
             if file_info_form.is_valid():
                 file_info_form.save()
 
-                return redirect("file_detail", project_slug=project_slug, file_slug=last_file.slug)
+                return redirect(
+                    "file_detail",
+                    project_slug=project_slug,
+                    file_slug=last_file.slug,
+                )
 
     return render(request, "projects/upload_file_to_project.html", context)
 
 
 def file_detail_view(request, project_slug, file_slug):
     project = ProjectModel.objects.filter(slug=project_slug).first()
+    if not project:
+        return render(
+            request,
+            "404.html",
+            {"message": "Проект этого файла не существует :("},
+            status=404,
+        )
 
     is_owner = True if project.owner == request.user else False
 
     is_download_allowed = True if project.status == "finished" else False
 
     file = FileModel.objects.filter(slug=file_slug).first()
+    if not file:
+        return render(
+            request,
+            "404.html",
+            {"message": "Этот файл не существует :("},
+            status=404,
+        )
 
     context = {
         "project": project,
         "file": file,
         "is_owner": is_owner,
         "is_download_allowed": is_download_allowed,
-        "page_title": f"{'.'.join(file.readable_filename.split('.')[:-1])} v{file.version}"
+        "page_title": f"{'.'.join(file.readable_filename.split('.')[:-1])} v{file.version}",
     }
 
     return render(request, "projects/file_detail.html", context)
 
 
+def get_upload_value_view(request, upload_id):
+    value = cache.get(f"object_{upload_id}", -1)
+    data = {
+        "progress": round(value, 2),
+    }
+    return JsonResponse(data)
+
+
 def upload_file(file, upload_id):
     if not file:
-        return JsonResponse({'error': 'Нет файла'}, status=400)
+        return {"status": "error"}
 
     cache_upload_id = f"object_{upload_id}"
     cache.set(cache_upload_id, 0, timeout=5 * 60)
@@ -366,9 +485,11 @@ def upload_file(file, upload_id):
     bucket_name = settings.BUCKET_NAME
 
     filename = f"media/{uuid.uuid4()}_{file.name}"
-    object_path = f"{datetime.datetime.now().timestamp()}_{filename.split('/')[-1]}"
+    object_path = (
+        f"{datetime.datetime.now().timestamp()}_{filename.split('/')[-1]}"
+    )
 
-    with open(f'{filename}', 'wb+') as destination:
+    with open(f"{filename}", "wb+") as destination:
         for chunk in file.chunks():
             destination.write(chunk)
 
@@ -391,9 +512,25 @@ def upload_file(file, upload_id):
     }
 
 
-def get_upload_value_view(request, upload_id):
-    value = cache.get(f"object_{upload_id}", -1)
-    data = {
-        "progress": round(value, 2),
-    }
-    return JsonResponse(data)
+def delete_files(file_ids_list: list = None, project_id: str = None):
+    with open("iam_token.txt", "r", encoding="utf-8") as token_file:
+        iam_token = token_file.read()
+    headers = {"Authorization": f"Bearer {iam_token}"}
+
+    if file_ids_list:
+        files = FileModel.objects.filter(id__in=file_ids_list)
+
+    elif project_id:
+        files = FileModel.objects.filter(project=project_id).all()
+
+    else:
+        raise AttributeError(
+            "Не передан один из обязательных атрибутов: file_ids_list, project_id"
+        )
+
+    for file in files:
+        requests.delete(file.url, headers=headers)
+
+    files.delete()
+
+    return True

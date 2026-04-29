@@ -1,6 +1,6 @@
 FROM python:3.11-alpine3.23
 
-COPY requirements.txt /temp/requirements.txt
+COPY requirements/prod.txt /temp/requirements.txt
 
 COPY freelancer /freelancer
 WORKDIR /freelancer

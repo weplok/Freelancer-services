@@ -7,35 +7,35 @@ register = template.Library()
 
 # Разрешённые домены без протокола
 ALLOWED_DOMAINS = [
-    r't\.me',
-    r'vk\.com',
-    r'vk\.ru',
-    r'instagram\.com',
-    r'facebook\.com',
-    r'max\.ru',
+    r"t\.me",
+    r"vk\.com",
+    r"vk\.ru",
+    r"instagram\.com",
+    r"facebook\.com",
+    r"max\.ru",
 ]
 
 # Паттерн:
 # 1. Любые ссылки с http/https
 # 2. ИЛИ разрешённые домены (с путём или без)
 URL_RE = re.compile(
-    rf'(?P<url>('
-    rf'https?://[^\s<]+'
+    rf"(?P<url>("
+    rf"https?://[^\s<]+"
     rf'|(?:{"|".join(ALLOWED_DOMAINS)})[^\s<]*'
-    rf'))',
-    re.IGNORECASE
+    rf"))",
+    re.IGNORECASE,
 )
 
 
 def build_link(url):
     href = url
-    if not url.startswith(('http://', 'https://')):
-        href = 'https://' + url
+    if not url.startswith(("http://", "https://")):
+        href = "https://" + url
 
     return (
         f'<a href="{escape(href)}" '
         f'target="_blank" rel="noopener noreferrer nofollow">'
-        f'{escape(url)}</a>'
+        f"{escape(url)}</a>"
     )
 
 
@@ -47,7 +47,7 @@ def customer_urlize(value):
     text = escape(value)
 
     def replacer(match):
-        url = match.group('url')
+        url = match.group("url")
         return build_link(url)
 
     return mark_safe(URL_RE.sub(replacer, text))

@@ -24,6 +24,8 @@ const FileInfoSaveBtn = document.getElementById('file-info-submit');
 let selectedFile = null;
 let pollingInterval = null;
 
+const isFirstUpload = document.getElementById("isFirstUpload").value === "true";
+
 const icons = {
   default: `
     <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -179,8 +181,10 @@ resetBtn.addEventListener('click', () => {
   setSelectedFile(null);
   clearInterval(pollingInterval);
   showMessage('Форма очищена.', false);
-  ProjectSubmitBtn.disabled = false;
-  ProjectSubmitBtn.textContent = "Создать проект";
+  if (isFirstUpload) {
+    ProjectSubmitBtn.disabled = false;
+    ProjectSubmitBtn.textContent = "Создать проект";
+  }
   // TODO: Если прожали ресет - удалить загруженный файл из БД и хранилища
 });
 
@@ -238,7 +242,11 @@ form.addEventListener('submit', (e) => {
           clearInterval(pollingInterval);
           showMessage('Файл загружен на сервер! 👍', false);
           ProjectSubmitBtn.disabled = false;
-          ProjectSubmitBtn.textContent = "Создать проект";
+          if (isFirstUpload) {
+            ProjectSubmitBtn.textContent = "Создать проект";
+          } else {
+            ProjectSubmitBtn.textContent = "Сохранить файл";
+          }
 
         }
 
@@ -275,15 +283,19 @@ form.addEventListener('submit', (e) => {
       console.log('Server response:', response);
     } else {
       showMessage('Ошибка загрузки файла.', true);
-      ProjectSubmitBtn.disabled = false;
-      ProjectSubmitBtn.textContent = "Создать проект";
+      if (isFirstUpload) {
+        ProjectSubmitBtn.disabled = false;
+        ProjectSubmitBtn.textContent = "Создать проект";
+      }
     }
   };
 
   xhr.onerror = () => {
     showMessage('Сетевая ошибка при загрузке.', true);
-    ProjectSubmitBtn.disabled = false;
-    ProjectSubmitBtn.textContent = "Создать проект";
+    if (isFirstUpload) {
+      ProjectSubmitBtn.disabled = false;
+      ProjectSubmitBtn.textContent = "Создать проект";
+    }
   };
 
   xhr.send(formData);

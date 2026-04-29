@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="container-main projects-page">
+  <div class="demo-grid demo-grid--1">
+    <div class="notfound__box">
+      <div class="card">
+        <div class="card__header">
+          <div class="card__title">Ошибка 404</div>
+          <div class="card__description">
+            {% if message %}
+              {{ message }}
+            {% else %}
+              Кажется, этой страницы не существует..
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="card__content">
+          <div class="skeleton" style="height: 1rem; width: 85%;"></div>
+          <div
+                  class="skeleton"
+                  style="height: 1rem; width: 65%; margin-top: .5rem;"
+          ></div>
+        </div>
+
+        <div class="card__footer">
+          <a href="{% url 'homepage' %}">
+            <button class="btn btn--default btn--lg" type="button">Вернуться на главную</button>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+<script>
+  console.error('404 Error: User attempted to access non-existent route');
+</script>
+{% endblock %}

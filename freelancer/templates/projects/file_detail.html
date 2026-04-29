@@ -90,19 +90,19 @@
 
             </aside>
         </section>
-        <h3 class="showcase__section-title">Автор</h3>
         <div class="dropdown-user">
+            <h3 class="card__title">Автор:</h3>
             <div class="avatar">
-                {% if user.avatar_url %}
+                {% if file.project.owner.avatar_url %}
                 <img class="avatar__image" alt="Аватарка пользователя"
-                     src="{{ user.avatar_url }}">
+                     src="{{ file.project.owner.avatar_url }}">
                 {% else %}
-                <div class="avatar__fallback">{{ user.name|slice:"1" }}</div>
+                <div class="avatar__fallback">{{ file.project.owner.name|slice:"1" }}</div>
                 {% endif %}
             </div>
             <div class="dropdown-user__info">
-                <div class="dropdown-user__name">{{ user.name }}</div>
-                <div class="dropdown-user__nickname">@{{ user.username }}</div>
+                <div class="dropdown-user__name">{{ file.project.owner.name }}</div>
+                <div class="dropdown-user__nickname">@{{ file.project.owner.username }}</div>
             </div>
         </div>
     </div>
