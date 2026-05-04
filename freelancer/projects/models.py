@@ -19,7 +19,7 @@ class ProjectModel(models.Model):
     description = models.TextField()  # Общее описание проекта
     customer = models.CharField(max_length=100)  # Заказчик проекта
     created_at = models.DateTimeField(
-        auto_now_add=True
+        auto_now_add=True,
     )  # Дата создания проекта
     status = models.CharField(
         max_length=20,

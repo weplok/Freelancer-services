@@ -13,8 +13,6 @@ from django.core.cache import cache
 from yandex.cloud.iam.v1.iam_token_service_pb2 import CreateIamTokenRequest
 from yandex.cloud.iam.v1.iam_token_service_pb2_grpc import IamTokenServiceStub
 
-from .models import FileModel
-
 
 # Вернет upload_id составной загрузки, который нужно передавать со всеми остальными запросами загрузки
 def start_upload(bucket, key, iam_token):
